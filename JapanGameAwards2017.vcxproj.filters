@@ -13,5 +13,204 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="ソース ファイル\Base">
+      <UniqueIdentifier>{eaf2611b-66f1-4965-9b25-dcd524064515}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Base\Manager">
+      <UniqueIdentifier>{a25f32f4-03d0-4f34-b801-2dc0d6d301a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\GameObject">
+      <UniqueIdentifier>{d66bded9-907f-4cef-a52d-c4ca10f34c51}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\GameObject\2D">
+      <UniqueIdentifier>{78761448-e038-4dc1-95c2-4be6fb74033b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\GameObject\3D">
+      <UniqueIdentifier>{68d28edb-3048-477a-a7d4-22ce97752c0b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\KF_Utility">
+      <UniqueIdentifier>{44667b1d-d120-438f-b96b-b148d217c060}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Mode">
+      <UniqueIdentifier>{db6c8405-41e8-42b8-bf62-7e275f587d49}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Base">
+      <UniqueIdentifier>{c51cda2e-2f2e-4b18-bde6-f1a79966b16e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Base\Manager">
+      <UniqueIdentifier>{9dbc9be5-dda7-403d-b4d0-0507d1f1ab06}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\GameObject">
+      <UniqueIdentifier>{52448db7-4335-4678-878c-0515b228e182}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\GameObject\2D">
+      <UniqueIdentifier>{332f522f-472f-41d8-b692-29927fc0b07a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\GameObject\3D">
+      <UniqueIdentifier>{c0d42161-3bbe-4d70-ac87-a22b0fc8d29e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\KF_Utility">
+      <UniqueIdentifier>{ec9927c5-3684-4dff-b837-e2049840d0b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Mode">
+      <UniqueIdentifier>{74b578f6-8d4d-4701-979f-74aa3ed26131}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Model">
+      <UniqueIdentifier>{3cc84fe2-97d4-4743-80b6-ddb37369303d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Model">
+      <UniqueIdentifier>{fdf6a367-e246-4eea-bf87-6d5b4b2dd628}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\GameObject\Model">
+      <UniqueIdentifier>{948530b7-7f17-4eff-aa55-365b452e73bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\GameObject\Model">
+      <UniqueIdentifier>{33079cd0-7e3b-4661-8342-bb7ba8ae6232}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\GameObject\Stage">
+      <UniqueIdentifier>{b4a97229-3512-49a1-b0e3-baed69035133}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\GameObject\Stage">
+      <UniqueIdentifier>{0e85b5c9-167b-4e89-a80c-c03dcdbd46cc}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="lightManager.h">
+      <Filter>ヘッダー ファイル\Base\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="materialManager.h">
+      <Filter>ヘッダー ファイル\Base\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="manager.h">
+      <Filter>ヘッダー ファイル\Base\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="textureManager.h">
+      <Filter>ヘッダー ファイル\Base\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="camera.h">
+      <Filter>ヘッダー ファイル\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="inputDX.h">
+      <Filter>ヘッダー ファイル\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="main.h">
+      <Filter>ヘッダー ファイル\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="rendererDX.h">
+      <Filter>ヘッダー ファイル\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="gameObject2D.h">
+      <Filter>ヘッダー ファイル\GameObject\2D</Filter>
+    </ClInclude>
+    <ClInclude Include="gameObject.h">
+      <Filter>ヘッダー ファイル\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="gameObject3D.h">
+      <Filter>ヘッダー ファイル\GameObject\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="meshCube.h">
+      <Filter>ヘッダー ファイル\GameObject\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="meshField.h">
+      <Filter>ヘッダー ファイル\GameObject\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="KF_Math.h">
+      <Filter>ヘッダー ファイル\KF_Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="KF_UtilityDX.h">
+      <Filter>ヘッダー ファイル\KF_Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="mode.h">
+      <Filter>ヘッダー ファイル\Mode</Filter>
+    </ClInclude>
+    <ClInclude Include="modeDemo.h">
+      <Filter>ヘッダー ファイル\Mode</Filter>
+    </ClInclude>
+    <ClInclude Include="model.h">
+      <Filter>ヘッダー ファイル\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="modelX.h">
+      <Filter>ヘッダー ファイル\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="modelManager.h">
+      <Filter>ヘッダー ファイル\Base\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="gameObjectModel.h">
+      <Filter>ヘッダー ファイル\GameObject\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="stage.h">
+      <Filter>ヘッダー ファイル\GameObject\Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="stageEditor.h">
+      <Filter>ヘッダー ファイル\GameObject\Stage</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="lightManager.cpp">
+      <Filter>ソース ファイル\Base\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="materialManager.cpp">
+      <Filter>ソース ファイル\Base\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="manager.cpp">
+      <Filter>ソース ファイル\Base\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="textureManager.cpp">
+      <Filter>ソース ファイル\Base\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="camera.cpp">
+      <Filter>ソース ファイル\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="inputDX.cpp">
+      <Filter>ソース ファイル\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>ソース ファイル\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="rendererDX.cpp">
+      <Filter>ソース ファイル\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="gameObject.cpp">
+      <Filter>ソース ファイル\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="gameObject2D.cpp">
+      <Filter>ソース ファイル\GameObject\2D</Filter>
+    </ClCompile>
+    <ClCompile Include="gameObject3D.cpp">
+      <Filter>ソース ファイル\GameObject\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="meshCube.cpp">
+      <Filter>ソース ファイル\GameObject\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="meshField.cpp">
+      <Filter>ソース ファイル\GameObject\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="KF_Math.cpp">
+      <Filter>ソース ファイル\KF_Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="KF_UtilityDX.cpp">
+      <Filter>ソース ファイル\KF_Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="mode.cpp">
+      <Filter>ソース ファイル\Mode</Filter>
+    </ClCompile>
+    <ClCompile Include="modeDemo.cpp">
+      <Filter>ソース ファイル\Mode</Filter>
+    </ClCompile>
+    <ClCompile Include="modelX.cpp">
+      <Filter>ソース ファイル\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="modelManager.cpp">
+      <Filter>ソース ファイル\Base\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="gameObjectModel.cpp">
+      <Filter>ソース ファイル\GameObject\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="stage.cpp">
+      <Filter>ソース ファイル\GameObject\Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="stageEditor.cpp">
+      <Filter>ソース ファイル\GameObject\Stage</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
