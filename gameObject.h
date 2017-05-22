@@ -13,7 +13,7 @@
 //--------------------------------------------------------------------------------
 //  インクルードファイル
 //--------------------------------------------------------------------------------
-#include "mode.h"
+#include "gameObjectManager.h"
 
 //--------------------------------------------------------------------------------
 //  クラス宣言
@@ -21,24 +21,27 @@
 class CGameObject
 {
 public:
-	CGameObject() : m_vPos(CKFVec3(0.0f)), m_pVtxBuffer(NULL), m_nID(-1), m_pri(CMode::PRI_MAX) {}
+	CGameObject() : m_vPos(CKFVec3(0.0f)), m_pVtxBuffer(NULL), m_nID(-1), m_pri(GOM::PRI_MAX) {}
 	~CGameObject() {}
 
-	virtual HRESULT Init(void) { return S_OK; }
-	virtual void	Uninit(void) = 0;
-	virtual void	Update(void) = 0;
-	virtual void	LateUpdate(void) = 0;
-	virtual void	Draw(void) = 0;
+	virtual KFRESULT	Init(void) { return KF_SUCCEEDED; }
+	virtual void		Uninit(void) = 0;
+	virtual void		Update(void) = 0;
+	virtual void		LateUpdate(void) = 0;
+	virtual void		Draw(void) = 0;
+	void				Release(void);
 
-	void			Release(void);
-	CKFVec3			GetPos(void);
-	void			SetPos(const CKFVec3 &vPos);
+	//Get関数
+	CKFVec3				GetPos(void);
+
+	//Set関数
+	void				SetPos(const CKFVec3 &vPos);
 
 protected:
 	CKFVec3						m_vPos;			//オブジェクト位置
 	LPDIRECT3DVERTEXBUFFER9		m_pVtxBuffer;	//頂点バッファ管理インターフェースポインタ
 	int							m_nID;
-	CMode::PRIORITY				m_pri;
+	GOM::PRIORITY				m_pri;
 };
 
 #endif

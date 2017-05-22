@@ -23,7 +23,20 @@
 //--------------------------------------------------------------------------------
 //  íËêîíËã`
 //--------------------------------------------------------------------------------
+
+//â~é¸ó¶
 #define KF_PI (3.1415926358979f)
+
+//--------------------------------------------------------------------------------
+//  óÒãìå^íËã`
+//--------------------------------------------------------------------------------
+
+//ê¨å˜Ç©é∏îsÇ©ÇÃåãâ Çï\Ç∑óÒãìå^
+enum KFRESULT
+{
+	KF_SUCCEEDED = 0,
+	KF_FAILED = 1
+};
 
 //--------------------------------------------------------------------------------
 //  ÉNÉâÉXíËã`
@@ -89,6 +102,9 @@ public:
 
 	CKFVec3 operator*(const CKFVec3 &vValue) const;
 	void operator*=(const CKFVec3 &vValue);
+
+	CKFVec3 operator/(const float &fValue) const;
+	void operator/=(const float &fValue);
 };
 
 //--------------------------------------------------------------------------------
@@ -107,9 +123,11 @@ public:
 
 	float m_af[4][4];
 
+	//ÉLÉÉÉXÉg
+	operator D3DXMATRIX() const;
+
 	//éZèpââéZéq
 	CKFMtx44 &operator=(const CKFMtx44 &mtxValue);
-
 	CKFMtx44 operator*(const CKFMtx44 &mtxValue) const;
 	void operator*=(const CKFMtx44 &mtxValue);
 };
@@ -153,7 +171,7 @@ public:
 
 	//ÉLÉÉÉXÉg
 	operator D3DCOLORVALUE () const;
-	operator unsigned long () const;
+	operator unsigned long() const;
 
 	//éZèpââéZéq
 	CKFColor &operator=(const CKFColor &vValue);
@@ -195,22 +213,28 @@ public:
 	static void		VecNormalize(CKFVec2 *pVec);
 	static void		VecNormalize(CKFVec3 *pVec);
 	static float	Vec3Dot(const CKFVec3 &vVecL, const CKFVec3 &vVecR);
+	static float	VecDistance(const CKFVec3 &vVecL, const CKFVec3 &vVecR);
+	static void		Vec3TransformCoord(CKFVec3 *pVec, const CKFMtx44 &mtxRot);
+	static void		Vec3TransformNormal(CKFVec3 *pVec, const CKFMtx44 &mtxRot);
 
 	//MatrixåvéZ
 	static CKFMtx44	ChangeDXMtxToMtx44(const D3DXMATRIX &mtx);
 	static void		MtxIdentity(CKFMtx44 *pMtx);
 	static void		MtxRotAxis(CKFMtx44 *pMtxRot, const CKFVec3 &vAxis, const float &fAngle);
-	static void		Vec3TransformCoord(CKFVec3 *pVec, const CKFMtx44 &mtxRot);
-	static void		Vec3TransformNormal(CKFVec3 *pVec, const CKFMtx44 &mtxRot);
+	static void		MtxRotationYawPitchRoll(CKFMtx44 *pMtxRot, const CKFVec3 &vRot);
+	static void		MtxTranslation(CKFMtx44 *pMtxTrans, const CKFVec3 &vPos);
 
 	//RayåvéZ
-	static CKFRay	CalculatePickingRay(const CKFVec2 &vScreenPos, const CKFMtx44 &mtxViewInverse);
-	static CKFRay	CalculatePickingRay(const CKFVec2 &vScreenPos, const D3DXMATRIX &mtxViewInverse);
-	static CKFRay	ChangePosToRay(const CKFVec2 &vScreenPos);
+	static CKFRay	CalculatePickingRay(const CKFVec2 &vScreenPos, const float &fViewportWidth, const float &fViewportHeight, const float &fProjMtx00, const float &fProjMtx11, const CKFMtx44 &mtxViewInverse);
+	static CKFRay	ChangePosToRay(const CKFVec2 &vScreenPos, const float &fViewportWidth, const float &fViewportHeight, const float &fProjMtx00, const float &fProjMtx11);
 	static void		TransformRay(CKFRay *pRay, const CKFMtx44 &mtxTrans);
-	static RTS_INFO	ContactRaytoSphere(const CKFRay &ray, const CKFVec3 &vSpherePos, const float &fRadius);
+	static RTS_INFO	ContactRayToSphere(const CKFRay &ray, const CKFVec3 &vSpherePos, const float &fRadius);
 
-	//Zê[ìxåvéZ
+	//ÇŸÇ©ÇÃåvéZ
+	static void		NormalizeRotInTwoPi(float* pRot);
+	static void		NormalizeRotInTwoPi(CKFVec3* pRot);
+	static void		NormalizeRotInPi(float* pRot);
+	static void		NormalizeRotInPi(CKFVec3* pRot);
 	static float	CalculateZDepth(const CKFVec3 &vPos, const CKFVec3 &vCameraEye, const CKFVec3 &vCameraAt);
 };
 

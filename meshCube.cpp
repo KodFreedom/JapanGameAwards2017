@@ -39,7 +39,7 @@ HRESULT	CMeshCube::Init(const CKFVec3 &vPos, const CKFVec3 &vRot, const CKFVec3 
 	m_vRot = vRot;
 	m_vSize = vSize;
 	m_cColor = cColor;
-	m_nTexID = (int)CTextureManager::DEMO_TEX_TEST;
+	m_texName = CTextureManager::TEX_TEST;
 
 	HRESULT hr = CGameObject3D::Init(6 * 4, 6 * 4 + 5 * 2, 6 * 2 + 5 * 4);
 	if (FAILED(hr)) { return hr; }
@@ -168,7 +168,7 @@ CMeshCube *CMeshCube::Create(const CKFVec3 &vPos, const CKFVec3 &vRot, const CKF
 	CMeshCube *pCube = NULL;
 	pCube = new CMeshCube;
 	pCube->Init(vPos, vRot, vSize, cColor);
-	pCube->m_pri = CMode::PRI_3D;
-	pCube->m_nID = GetManager()->GetModeNow()->SaveGameObj(CMode::PRI_3D, pCube);
+	pCube->m_pri = GOM::PRI_3D;
+	pCube->m_nID = GetManager()->GetGameObjectManager()->SaveGameObj(pCube->m_pri, pCube);
 	return pCube;
 }

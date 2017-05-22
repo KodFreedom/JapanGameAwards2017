@@ -28,24 +28,25 @@ class CTextureManager
 public:
 	typedef enum
 	{
-		DEMO_TEX_TEST,
-		DEMO_TEX_POLYGON_ALPHA,
-		DEMO_TEX_ROAD,
-		DEMO_TEX_MAX
-	}DEMO_TEX_NAME;
+		TEX_NONE,
+		TEX_TEST,
+		TEX_POLYGON_ALPHA,
+		TEX_ROAD,
+		TEX_MAX
+	}TEX_NAME;
 
 	CTextureManager();
 	~CTextureManager() {}
 
 	void					Init(void);
-	void					LoadAll(const CManager::MODE &mode);
+	void					LoadAll(void);
 	void					UnloadAll(void);
-	LPDIRECT3DTEXTURE9		GetTexture(const int &nTexID);
+	LPDIRECT3DTEXTURE9		GetTexture(const TEX_NAME &texName);
 private:
-	void Load(LPCSTR *pPathBegin, const int &nTexMax);
+	void Load(const TEX_NAME &texBegin, const TEX_NAME &texEnd);
 
 	std::vector<LPDIRECT3DTEXTURE9>	m_vectorTexture;
-	static LPCSTR					m_apDemoTexPath[DEMO_TEX_MAX];
+	static LPCSTR					m_apTexPath[TEX_MAX];
 };
 
 #endif

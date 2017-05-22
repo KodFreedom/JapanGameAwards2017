@@ -43,13 +43,13 @@
 CCamera::CCamera()
 	: m_vMovement(CKFVec3(0.0f))
 	, m_vPosAt(CKFVec3(0.0f))
-	, m_vPosEye(CKFVec3(0.0f, 5.0f, -5.0f))
+	, m_vPosEye(CKFVec3(0.0f, 1.0f, -1.0f))
 	, m_vVecLook(CKFVec3(0.0f))
 	, m_vVecUp(CKFVec3(0.0f, 1.0f, 0.0f))
 	, m_vVecRight(CKFVec3(1.0f, 0.0f, 0.0f))
 	, m_fDistance(0.0f)
-	, m_fFovY(75.0f * KF_PI / 180.0f)
-	, m_fFar(1000.0f)
+	, m_fFovY((float)DEFAULT_FOV)
+	, m_fFar((float)DEFAULT_FAR)
 {
 }
 
@@ -108,6 +108,14 @@ void CCamera::Update(void)
 //--------------------------------------------------------------------------------
 void CCamera::LateUpdate(void)
 {
+
+}
+
+//--------------------------------------------------------------------------------
+//  セット処理(描画直前)
+//--------------------------------------------------------------------------------
+void CCamera::Set(void)
+{
 	LPDIRECT3DDEVICE9 pDevice = GetManager()->GetRenderer()->GetDevice();
 
 	NormalizeCamera();
@@ -121,7 +129,7 @@ void CCamera::LateUpdate(void)
 	//プロジェクション行列
 	D3DXMATRIX mtxProjection;
 	D3DXMatrixPerspectiveFovLH(&mtxProjection,
-		m_fFovY,//視野角度(半分)
+		m_fFovY * KF_PI / 180.0f,//視野角度(半分)
 		(float)SCREEN_WIDTH / SCREEN_HEIGHT,//アスペクト比
 		0.01f,//near 0.0fより大きい値
 		m_fFar);//far nearより大きい値
@@ -228,7 +236,6 @@ void CCamera::SetCamera(const CKFVec3 &vPosAt, const CKFVec3 &vPosEye, const CKF
 //  private
 //
 //--------------------------------------------------------------------------------
-
 //--------------------------------------------------------------------------------
 //  カメラ前方と上と右を常に90度になってるを確保する
 //--------------------------------------------------------------------------------

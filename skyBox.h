@@ -1,43 +1,39 @@
 //--------------------------------------------------------------------------------
 //
-//　mode.h
+//　skyBox.h
 //	Author : Xu Wenjie
-//	Date   : 2017-04-28
+//	Date   : 2017-05-10
 //--------------------------------------------------------------------------------
 //  Update : 
 //	
 //--------------------------------------------------------------------------------
-#ifndef _MODE_H_
-#define _MODE_H_
+#ifndef _SKT_BOX_H_
+#define _SKT_BOX_H_
 
 //--------------------------------------------------------------------------------
 //  インクルードファイル
 //--------------------------------------------------------------------------------
-//--------------------------------------------------------------------------------
-//  前方宣言
-//--------------------------------------------------------------------------------
-class CCamera;
+#include "gameObject3D.h"
 
 //--------------------------------------------------------------------------------
 //  クラス宣言
 //--------------------------------------------------------------------------------
-class CMode
+class CSkyBox : public CGameObject3D
 {
 public:
-	CMode();
-	~CMode() {}
+	CSkyBox();
+	~CSkyBox() {}
 
-	virtual void	Init(void) = 0;
-	virtual void	Uninit(void);
-	virtual void	Update(void);
-	virtual void	LateUpdate(void);
-	virtual void	Draw(void);
+	KFRESULT	Init(const CKFVec3 &vPos, const CKFVec3 &vSize);
 
-	//Get関数
-	CCamera*		GetCamera(void) { return m_pCamera; }
+	static CSkyBox*	Create(void);
+	static CSkyBox*	Create(const CKFVec3 &vPos, const CKFVec3 &vSize);
+private:
+	void		MakeVertex(void);
+	void		SetRenderState(void) override;
+	void		ResetRenderState(void) override;
 
-protected:
-	CCamera*		m_pCamera;
+	CKFVec3		m_vSize;
 };
 
 #endif

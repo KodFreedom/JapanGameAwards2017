@@ -13,6 +13,8 @@
 //--------------------------------------------------------------------------------
 //  インクルードファイル
 //--------------------------------------------------------------------------------
+#include "gameObject.h"
+#include "modelManager.h"
 #include "materialManager.h"
 
 //--------------------------------------------------------------------------------
@@ -24,21 +26,22 @@ public:
 	CGameObjectModel();
 	~CGameObjectModel();
 
-	HRESULT	Init(const CKFVec3 &vPos, const CKFVec3 &vRot, const int &nModelID);
-	void	Uninit(void);
-	void	Update(void);
-	void	LateUpdate(void);
-	void	Draw(void);
+	virtual void	Init(const CKFVec3 &vPos, const CKFVec3 &vRot, const CMOM::MODEL_NAME &modelName);
+	virtual void	Uninit(void) override;
+	virtual void	Update(void) override;
+	virtual void	LateUpdate(void) override;
+	virtual void	Draw(void) override;
 
-	static CGameObjectModel *Create(const CKFVec3 &vPos, const CKFVec3 &vRot, const int &nModelID);
+	static CGameObjectModel*	Create(const CKFVec3 &vPos, const CKFVec3 &vRot, const CMOM::MODEL_NAME &modelName);
+
 protected:
-	void	SetMatrix(LPDIRECT3DDEVICE9 pDevice);
-	void	SetRenderState(LPDIRECT3DDEVICE9 pDevice);
-	void	ResetRenderState(LPDIRECT3DDEVICE9 pDevice);
+	virtual void		SetMatrix(void);
+	virtual void		SetRenderState(void);
+	virtual void		ResetRenderState(void);
 
-	CKFVec3						m_vRot;			// 回転
-	int							m_nModelID;		// モデルID
-	CMM::MATERIAL				m_matType;		// マテリアル
+	CKFVec3				m_vRot;			// 回転
+	CMOM::MODEL_NAME	m_modelName;	// モデル
+	CMM::MATERIAL		m_matType;		// マテリアル
 };
 
 #endif

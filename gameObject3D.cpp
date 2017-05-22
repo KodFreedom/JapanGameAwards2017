@@ -13,7 +13,6 @@
 //--------------------------------------------------------------------------------
 #include "main.h"
 #include "manager.h"
-#include "textureManager.h"
 #include "rendererDX.h"
 #include "gameObject3D.h"
 
@@ -28,14 +27,14 @@
 //  コンストラクタ
 //--------------------------------------------------------------------------------
 CGameObject3D::CGameObject3D() :CGameObject()
-	, m_pIdxBuffer(NULL)
-	, m_nTexID(-1)
-	, m_matType(CMM::MAT_NORMAL)
-	, m_nIdxNum(0)
-	, m_nPolygonNum(0)
-	, m_nVtxNum(0)
-	, m_vRot(CKFVec3(0.0f))
-	, m_vScale(CKFVec3(1.0f))
+, m_pIdxBuffer(NULL)
+, m_texName(CTM::TEX_MAX)
+, m_matType(CMM::MAT_NORMAL)
+, m_nIdxNum(0)
+, m_nPolygonNum(0)
+, m_nVtxNum(0)
+, m_vRot(CKFVec3(0.0f))
+, m_vScale(CKFVec3(1.0f))
 {
 }
 
@@ -49,14 +48,15 @@ CGameObject3D::~CGameObject3D()
 //--------------------------------------------------------------------------------
 //  初期化
 //--------------------------------------------------------------------------------
-HRESULT CGameObject3D::Init(const int &nVtxNum, const int &nIdxNum, const int &nPolygonNum)
+KFRESULT CGameObject3D::Init(const int &nVtxNum, const int &nIdxNum, const int &nPolygonNum)
 {
 	m_nVtxNum = nVtxNum;
 	m_nIdxNum = nIdxNum;
 	m_nPolygonNum = nPolygonNum;
 
-	HRESULT hr = CreateBuffer();
-	return hr;
+	KFRESULT result = CreateBuffer();
+
+	return result;
 }
 
 //--------------------------------------------------------------------------------
@@ -103,10 +103,10 @@ void CGameObject3D::Draw(void)
 	LPDIRECT3DDEVICE9 pDevice = GetManager()->GetRenderer()->GetDevice();
 
 	//RenderState設定
-	SetRenderState(pDevice);
+	SetRenderState();
 
 	//マトリックス設定
-	SetMatrix(pDevice);
+	SetMatrix();
 
 	// 頂点バッファをデータストリームに設定
 	pDevice->SetStreamSource(
@@ -115,14 +115,14 @@ void CGameObject3D::Draw(void)
 		0,						//オフセット（開始位置）
 		sizeof(VERTEX_3D));		//ストライド量
 
-	// 頂点インデックスの設定
+								// 頂点インデックスの設定
 	pDevice->SetIndices(m_pIdxBuffer);
 
 	// 頂点フォーマットの設定
 	pDevice->SetFVF(FVF_VERTEX_3D);
 
 	// テクスチャの設定
-	LPDIRECT3DTEXTURE9 pTexture = GetManager()->GetTextureManager()->GetTexture(m_nTexID);
+	LPDIRECT3DTEXTURE9 pTexture = GetManager()->GetTextureManager()->GetTexture(m_texName);
 	pDevice->SetTexture(0, pTexture);
 
 	// マテリアルの設定
@@ -139,13 +139,13 @@ void CGameObject3D::Draw(void)
 		m_nPolygonNum);
 
 	//RenderState戻す
-	ResetRenderState(pDevice);
+	ResetRenderState();
 }
 
 //--------------------------------------------------------------------------------
 // バッファ生成
 //--------------------------------------------------------------------------------
-HRESULT CGameObject3D::CreateBuffer(void)
+KFRESULT CGameObject3D::CreateBuffer(void)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetManager()->GetRenderer()->GetDevice();
 	HRESULT hr;
@@ -162,7 +162,7 @@ HRESULT CGameObject3D::CreateBuffer(void)
 	if (FAILED(hr))
 	{
 		MessageBox(NULL, "GameObject3D : CreateVertexBuffer ERROR!!", "エラー", MB_OK | MB_ICONWARNING);
-		return hr;
+		return KF_FAILED;
 	}
 
 	//インデックスバッファの作成
@@ -177,40 +177,44 @@ HRESULT CGameObject3D::CreateBuffer(void)
 	if (FAILED(hr))
 	{
 		MessageBox(NULL, "GameObject3D : CreateIndexBuffer ERROR!!", "エラー", MB_OK | MB_ICONWARNING);
-		return hr;
+		return KF_FAILED;
 	}
 
-	return hr;
+	return KF_SUCCEEDED;
 }
 
 //--------------------------------------------------------------------------------
 // SetWorldMatrix
 //--------------------------------------------------------------------------------
-void CGameObject3D::SetMatrix(LPDIRECT3DDEVICE9 pDevice)
+void CGameObject3D::SetMatrix(void)
 {
+	LPDIRECT3DDEVICE9 pDevice = GetManager()->GetRenderer()->GetDevice();
+
 	//ワールド相対座標
-	D3DXMATRIX mtxWorld;
-	D3DXMATRIX mtxRot;
-	D3DXMATRIX mtxPos;
+	CKFMtx44 mtxWorld;
+	CKFMtx44 mtxRot;
+	CKFMtx44 mtxPos;
 
 	//単位行列に初期化
-	D3DXMatrixIdentity(&mtxWorld);
+	CKFMath::MtxIdentity(&mtxWorld);
 
 	//回転(Y->X->Z)
-	D3DXMatrixRotationYawPitchRoll(&mtxRot, m_vRot.m_fY, m_vRot.m_fX, m_vRot.m_fZ);
+	CKFMath::MtxRotationYawPitchRoll(&mtxRot, m_vRot);
 	mtxWorld *= mtxRot;
 
 	//平行移動
-	D3DXMatrixTranslation(&mtxPos, m_vPos.m_fX, m_vPos.m_fY, m_vPos.m_fZ);
+	CKFMath::MtxTranslation(&mtxPos, m_vPos);
 	mtxWorld *= mtxPos;
 
-	pDevice->SetTransform(D3DTS_WORLD, &mtxWorld);
+	//デバイスに設定
+	D3DXMATRIX mtx = mtxWorld;
+	pDevice->SetTransform(D3DTS_WORLD, &mtx);
 }
 
 //--------------------------------------------------------------------------------
 // SetRenderState
 //--------------------------------------------------------------------------------
-void CGameObject3D::SetRenderState(LPDIRECT3DDEVICE9 pDevice)
+void CGameObject3D::SetRenderState(void)
 {
 
 }
@@ -218,7 +222,7 @@ void CGameObject3D::SetRenderState(LPDIRECT3DDEVICE9 pDevice)
 //--------------------------------------------------------------------------------
 // ResetRenderState
 //--------------------------------------------------------------------------------
-void CGameObject3D::ResetRenderState(LPDIRECT3DDEVICE9 pDevice)
+void CGameObject3D::ResetRenderState(void)
 {
 
 }

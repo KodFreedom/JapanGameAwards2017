@@ -13,9 +13,7 @@
 //--------------------------------------------------------------------------------
 #include "main.h"
 #include "manager.h"
-#include "textureManager.h"
 #include "rendererDX.h"
-#include "gameObject.h"
 #include "gameObject2D.h"
 
 //--------------------------------------------------------------------------------
@@ -32,7 +30,7 @@ CGameObject2D::CGameObject2D()
 	: m_fRot(0.0f)
 	, m_vSize(CKFVec2(0.0f, 0.0f))
 	, m_cColor(CKFColor(1.0f))
-	, m_nTexID(-1)
+	, m_texName(CTM::TEX_MAX)
 {
 }
 
@@ -46,15 +44,21 @@ CGameObject2D::~CGameObject2D()
 //--------------------------------------------------------------------------------
 //  初期化処理
 //--------------------------------------------------------------------------------
-HRESULT CGameObject2D::Init(const CKFVec3 &vPos, const float &fRot, const CKFVec2 &vSize, const int &nTexID)
+KFRESULT CGameObject2D::Init(const CKFVec3 &vPos, const float &fRot, const CKFVec2 &vSize, const CTM::TEX_NAME &texName)
 {
 	m_vPos = vPos;
 	m_fRot = fRot;
 	m_vSize = vSize;
-	m_nTexID = nTexID;
+	m_texName = texName;
 
-	HRESULT hr = MakeVertex();
-	return hr;
+	if (CreateBuffer() == KF_FAILED)
+	{
+		return KF_FAILED;
+	}
+
+	UpdateVertex();
+
+	return KF_SUCCEEDED;
 }
 
 //--------------------------------------------------------------------------------
@@ -94,7 +98,7 @@ void CGameObject2D::Draw(void)
 	LPDIRECT3DDEVICE9 pDevice = GetManager()->GetRenderer()->GetDevice();
 
 	// レンダーステート設定
-	SetRenderState(pDevice);
+	SetRenderState();
 
 	// 頂点バッファをデータストリームに設定
 	pDevice->SetStreamSource(
@@ -103,11 +107,11 @@ void CGameObject2D::Draw(void)
 		0,						//オフセット（開始位置）
 		sizeof(VERTEX_2D));		//ストライド量
 
-	// 頂点フォーマットの設定
+								// 頂点フォーマットの設定
 	pDevice->SetFVF(FVF_VERTEX_2D);
 
 	// テクスチャの設定
-	LPDIRECT3DTEXTURE9 pTexture = GetManager()->GetTextureManager()->GetTexture(m_nTexID);
+	LPDIRECT3DTEXTURE9 pTexture = GetManager()->GetTextureManager()->GetTexture(m_texName);
 	pDevice->SetTexture(0, pTexture);
 
 	// ポリゴンの描画
@@ -115,14 +119,14 @@ void CGameObject2D::Draw(void)
 		0,						//オフセット（頂点数）
 		m_nNumPolygon2D);		//ポリゴン数
 
-	// レンダーステート戻す
-	ResetRenderState(pDevice);
+								// レンダーステート戻す
+	ResetRenderState();
 }
 
 //--------------------------------------------------------------------------------
 // レンダーステート設定
 //--------------------------------------------------------------------------------
-void CGameObject2D::SetRenderState(LPDIRECT3DDEVICE9 pDevice)
+void CGameObject2D::SetRenderState(void)
 {
 
 }
@@ -130,7 +134,7 @@ void CGameObject2D::SetRenderState(LPDIRECT3DDEVICE9 pDevice)
 //--------------------------------------------------------------------------------
 // レンダーステート戻す
 //--------------------------------------------------------------------------------
-void CGameObject2D::ResetRenderState(LPDIRECT3DDEVICE9 pDevice)
+void CGameObject2D::ResetRenderState(void)
 {
 
 }
@@ -140,48 +144,6 @@ void CGameObject2D::ResetRenderState(LPDIRECT3DDEVICE9 pDevice)
 //--------------------------------------------------------------------------------
 void CGameObject2D::UpdateVertex(void)
 {
-	LPDIRECT3DDEVICE9 pDevice = GetManager()->GetRenderer()->GetDevice();
-
-	// 頂点情報を設定
-	//仮想アドレスを取得するためのポインタ
-	VERTEX_2D *pVtx;
-
-	//頂点バッファをロックして、仮想アドレスを取得する
-	m_pVtxBuffer->Lock(0, 0, (void**)&pVtx, 0);
-
-	//頂点位置更新
-	SetVtxPos(pVtx);
-
-	//頂点カラー更新
-	SetVtxColor(pVtx);
-
-	//仮想アドレス解放
-	m_pVtxBuffer->Unlock();
-}
-
-//--------------------------------------------------------------------------------
-//  頂点生成処理
-//--------------------------------------------------------------------------------
-HRESULT CGameObject2D::MakeVertex(void)
-{
-	LPDIRECT3DDEVICE9 pDevice = GetManager()->GetRenderer()->GetDevice();
-	HRESULT hr;
-
-	//頂点バッファ
-	hr = pDevice->CreateVertexBuffer(
-		sizeof(VERTEX_2D) * m_nNumVtx2D,	//作成したい頂点バッファのサイズ
-		D3DUSAGE_WRITEONLY,					//頂点バッファの使用方法
-		FVF_VERTEX_2D,						//書かなくても大丈夫
-		D3DPOOL_MANAGED,					//メモリ管理方法(managed：デバイスにお任せ)
-		&m_pVtxBuffer,						//頂点バッファのアドレス
-		NULL);
-
-	if (FAILED(hr))
-	{
-		MessageBox(NULL, "CGameObject2D : CreateVertexBuffer ERROR!!", "エラー", MB_OK | MB_ICONWARNING);
-		return hr;
-	}
-
 	// 頂点情報を設定
 	//仮想アドレスを取得するためのポインタ
 	VERTEX_2D *pVtx;
@@ -206,8 +168,32 @@ HRESULT CGameObject2D::MakeVertex(void)
 
 	//仮想アドレス解放
 	m_pVtxBuffer->Unlock();
+}
 
-	return hr;
+//--------------------------------------------------------------------------------
+//  頂点バッファ生成処理
+//--------------------------------------------------------------------------------
+KFRESULT CGameObject2D::CreateBuffer(void)
+{
+	LPDIRECT3DDEVICE9 pDevice = GetManager()->GetRenderer()->GetDevice();
+	HRESULT hr;
+
+	//頂点バッファ
+	hr = pDevice->CreateVertexBuffer(
+		sizeof(VERTEX_2D) * m_nNumVtx2D,	//作成したい頂点バッファのサイズ
+		D3DUSAGE_WRITEONLY,					//頂点バッファの使用方法
+		FVF_VERTEX_2D,						//書かなくても大丈夫
+		D3DPOOL_MANAGED,					//メモリ管理方法(managed：デバイスにお任せ)
+		&m_pVtxBuffer,						//頂点バッファのアドレス
+		NULL);
+
+	if (FAILED(hr))
+	{
+		MessageBox(NULL, "CGameObject2D : CreateVertexBuffer ERROR!!", "エラー", MB_OK | MB_ICONWARNING);
+		return KF_FAILED;
+	}
+
+	return KF_SUCCEEDED;
 }
 
 //--------------------------------------------------------------------------------
@@ -247,4 +233,17 @@ void CGameObject2D::SetVtxUV(VERTEX_2D *pVtx)
 	pVtx[1].vUV = CKFVec2(1.0f, 0.0f);
 	pVtx[2].vUV = CKFVec2(0.0f, 1.0f);
 	pVtx[3].vUV = CKFVec2(1.0f, 1.0f);
+}
+
+//--------------------------------------------------------------------------------
+//  オブジェクトの生成
+//--------------------------------------------------------------------------------
+CGameObject2D* CGameObject2D::Create(const CKFVec3 &vPos, const float &fRot, const CKFVec2 &vSize, const CTM::TEX_NAME &texName)
+{
+	CGameObject2D* pObj = NULL;
+	pObj = new CGameObject2D;
+	pObj->Init(vPos, fRot, vSize, texName);
+	pObj->m_pri = GOM::PRI_2D;
+	pObj->m_nID = GetManager()->GetGameObjectManager()->SaveGameObj(pObj->m_pri, pObj);
+	return pObj;
 }

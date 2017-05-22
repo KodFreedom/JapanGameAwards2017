@@ -1,10 +1,8 @@
 //--------------------------------------------------------------------------------
 //
+//	XFileモデル
 //　modelX.h
 //	Author : Xu Wenjie
-//	Date   : 2017-01-23
-//--------------------------------------------------------------------------------
-//  Update : 
 //	
 //--------------------------------------------------------------------------------
 #ifndef _MODEL_X_H_
@@ -13,6 +11,7 @@
 //--------------------------------------------------------------------------------
 //  インクルードファイル
 //--------------------------------------------------------------------------------
+#include "model.h"
 
 //--------------------------------------------------------------------------------
 //  前方宣言
@@ -24,22 +23,25 @@
 class CModelX : public CModel
 {
 public:
+	//--------------------------------------------------------------------------------
+	//  関数定義
+	//--------------------------------------------------------------------------------
 	CModelX();
 	~CModelX() {}
 
-	HRESULT		Init(const LPCSTR &pXFilePath);
-	void		Uninit(void);
-	void		Draw(LPDIRECT3DDEVICE9 pDevice);
-	void		Draw(LPDIRECT3DDEVICE9 pDevice, const CMM::MATERIAL &matType);
-	void		Draw(LPDIRECT3DDEVICE9 pDevice, const CMM::MATERIAL &matType, const int &nTexID);
+	KFRESULT	Init(const LPCSTR &pXFilePath);
+	void		Uninit(void) override;
+	void		Draw(void) override;
+	void		Draw(const CMM::MATERIAL &matType) override;
 
-	static CModelX *Create(const LPCSTR pXFilePath);
+	static CModelX* Create(const LPCSTR &pXFilePath);
+
 private:
 
-	std::vector<LPDIRECT3DTEXTURE9>	m_vectorTexture;	//textureインターフェース
-	LPD3DXMESH						m_pMesh;			//メッシュ情報インターフェイス
-	LPD3DXBUFFER					m_pBufferMaterial;	//マテリアル情報　動的メモリ
-	DWORD							m_dwNumMaterial;	//モデルのマテリアル数
+	//--------------------------------------------------------------------------------
+	//  変数定義
+	//--------------------------------------------------------------------------------
+	XFILE		m_XFileInfo;
 };
 
 #endif

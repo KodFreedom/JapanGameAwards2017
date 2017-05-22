@@ -24,7 +24,8 @@
 //--------------------------------------------------------------------------------
 //  静的メンバ変数
 //--------------------------------------------------------------------------------
-LPCSTR CTextureManager::m_apDemoTexPath[DEMO_TEX_MAX] = {
+LPCSTR CTextureManager::m_apTexPath[TEX_MAX] = {
+	NULL,
 	"data/TEXTURE/polygon.jpg",					//Test Texture
 	"data/TEXTURE/polygon.png",					//Test Texture
 	"data/TEXTURE/road_stone.jpg",				//Field Texture
@@ -35,7 +36,7 @@ LPCSTR CTextureManager::m_apDemoTexPath[DEMO_TEX_MAX] = {
 //--------------------------------------------------------------------------------
 CTextureManager::CTextureManager()
 {
-	
+
 }
 
 //--------------------------------------------------------------------------------
@@ -49,16 +50,9 @@ void CTextureManager::Init(void)
 //--------------------------------------------------------------------------------
 //  全てのテクスチャを読み込む
 //--------------------------------------------------------------------------------
-void CTextureManager::LoadAll(const CManager::MODE &mode)
+void CTextureManager::LoadAll(void)
 {
-	switch (mode)
-	{
-	case CManager::MODE_DEMO:
-		Load(&m_apDemoTexPath[0], DEMO_TEX_MAX);
-		break;
-	default:
-		break;
-	}
+	Load(TEX_NONE, TEX_MAX);
 }
 
 //--------------------------------------------------------------------------------
@@ -81,51 +75,44 @@ void CTextureManager::UnloadAll(void)
 //--------------------------------------------------------------------------------
 //  テクスチャを取得する
 //--------------------------------------------------------------------------------
-LPDIRECT3DTEXTURE9 CTextureManager::GetTexture(const int &nTexID)
+LPDIRECT3DTEXTURE9 CTextureManager::GetTexture(const TEX_NAME &texName)
 {
-	if (nTexID < 0 || nTexID >= (int)m_vectorTexture.size()) { return NULL; }
+	if (texName <= TEX_NONE || texName >= TEX_MAX) { return NULL; }
 
-	return m_vectorTexture[nTexID];
+	return m_vectorTexture[texName];
 }
 
 //--------------------------------------------------------------------------------
 //  テクスチャを確保する
 //--------------------------------------------------------------------------------
-void CTextureManager::Load(LPCSTR *pPathBegin, const int &nTexMax)
+void CTextureManager::Load(const TEX_NAME &texBegin, const TEX_NAME &texEnd)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetManager()->GetRenderer()->GetDevice();
-	char aStr[128];
+	LPSTR str = NULL;
 	HRESULT hr;
-	LPCSTR *pPath = pPathBegin;
 
 	if (!m_vectorTexture.empty())
 	{
-		wsprintf(aStr, "m_listTextureが空じゃない!");
-		MessageBox(NULL, aStr, "エラー", MB_OK | MB_ICONWARNING);
+		wsprintf(str, "m_vectorTextureが空じゃない!");
+		MessageBox(NULL, str, "エラー", MB_OK | MB_ICONWARNING);
 		return;
 	}
 
-	for (int nCnt = 0; nCnt < nTexMax; nCnt++)
+	for (int nCnt = texBegin; nCnt < texEnd; nCnt++)
 	{
-		if (pPath == NULL)
+		LPDIRECT3DTEXTURE9 pTex = NULL;
+
+		if (m_apTexPath[nCnt] != NULL)
 		{
-			wsprintf(aStr, "%d番のテクスチャパスがNULL!", nCnt);
-			MessageBox(NULL, aStr, "エラー", MB_OK | MB_ICONWARNING);
-		}
-		else
-		{
-			LPDIRECT3DTEXTURE9 pTex = NULL;
-			hr = D3DXCreateTextureFromFile(pDevice, *pPath, &pTex);
+			hr = D3DXCreateTextureFromFile(pDevice, m_apTexPath[nCnt], &pTex);
 
 			if (FAILED(hr))
 			{
-				wsprintf(aStr, "%d番のテクスチャの読み込みが失敗！！！", nCnt);
-				MessageBox(NULL, aStr, "エラー", MB_OK | MB_ICONWARNING);
+				wsprintf(str, "%d番のテクスチャの読み込みが失敗！！！", nCnt);
+				MessageBox(NULL, str, "エラー", MB_OK | MB_ICONWARNING);
 			}
-
-			m_vectorTexture.push_back(pTex);
 		}
 
-		pPath++;
+		m_vectorTexture.push_back(pTex);
 	}
 }

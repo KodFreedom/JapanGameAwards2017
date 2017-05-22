@@ -13,7 +13,9 @@
 //--------------------------------------------------------------------------------
 #include "main.h"
 #include "mode.h"
-#include "gameObject.h"
+#include "camera.h"
+#include "manager.h"
+#include "gameObjectManager.h"
 
 //--------------------------------------------------------------------------------
 //  クラス
@@ -24,10 +26,6 @@
 CMode::CMode()
 	: m_pCamera(NULL)
 {
-	for (int nCntPri = 0; nCntPri < PRI_MAX; nCntPri++)
-	{
-		m_avectorGameObj[nCntPri].clear();
-	}
 }
 
 //--------------------------------------------------------------------------------
@@ -35,21 +33,16 @@ CMode::CMode()
 //--------------------------------------------------------------------------------
 void CMode::Uninit(void)
 {
-	for (int nCntPri = 0; nCntPri < PRI_MAX; nCntPri++)
+	//カメラの破棄
+	if (m_pCamera != NULL)
 	{
-		for (int nCnt = 0; nCnt < (int)m_avectorGameObj[nCntPri].size(); nCnt++)
-		{
-
-			if (m_avectorGameObj[nCntPri][nCnt] != NULL)
-			{
-				m_avectorGameObj[nCntPri][nCnt]->Uninit();
-				delete m_avectorGameObj[nCntPri][nCnt];
-				m_avectorGameObj[nCntPri][nCnt] = NULL;
-			}
-		}
-
-		m_avectorGameObj[nCntPri].clear();
+		m_pCamera->Uninit();
+		delete m_pCamera;
+		m_pCamera = NULL;
 	}
+
+	//オブジェクトの破棄
+	GetManager()->GetGameObjectManager()->ReleaseAll();
 }
 
 //--------------------------------------------------------------------------------
@@ -57,16 +50,14 @@ void CMode::Uninit(void)
 //--------------------------------------------------------------------------------
 void CMode::Update(void)
 {
-	for (int nCntPri = 0; nCntPri < PRI_MAX; nCntPri++)
+	//カメラの更新
+	if (m_pCamera != NULL)
 	{
-		for (int nCnt = 0; nCnt < (int)m_avectorGameObj[nCntPri].size(); nCnt++)
-		{
-			if (m_avectorGameObj[nCntPri][nCnt] != NULL)
-			{
-				m_avectorGameObj[nCntPri][nCnt]->Update();
-			}
-		}
+		m_pCamera->Update();
 	}
+
+	//オブジェクトの更新
+	GetManager()->GetGameObjectManager()->UpdateAll();
 }
 
 //--------------------------------------------------------------------------------
@@ -74,16 +65,14 @@ void CMode::Update(void)
 //--------------------------------------------------------------------------------
 void CMode::LateUpdate(void)
 {
-	for (int nCntPri = 0; nCntPri < PRI_MAX; nCntPri++)
+	//カメラの更新
+	if (m_pCamera != NULL)
 	{
-		for (int nCnt = 0; nCnt < (int)m_avectorGameObj[nCntPri].size(); nCnt++)
-		{
-			if (m_avectorGameObj[nCntPri][nCnt] != NULL)
-			{
-				m_avectorGameObj[nCntPri][nCnt]->LateUpdate();
-			}
-		}
+		m_pCamera->LateUpdate();
 	}
+
+	//オブジェクトの更新
+	GetManager()->GetGameObjectManager()->LateUpdateAll();
 }
 
 //--------------------------------------------------------------------------------
@@ -91,47 +80,12 @@ void CMode::LateUpdate(void)
 //--------------------------------------------------------------------------------
 void CMode::Draw(void)
 {
-	for (int nCntPri = 0; nCntPri < PRI_MAX; nCntPri++)
+	//カメラのセット
+	if (m_pCamera != NULL)
 	{
-		for (int nCnt = 0; nCnt < (int)m_avectorGameObj[nCntPri].size(); nCnt++)
-		{
-			if (m_avectorGameObj[nCntPri][nCnt] != NULL)
-			{
-				m_avectorGameObj[nCntPri][nCnt]->Draw();
-			}
-		}
-	}
-}
-
-//--------------------------------------------------------------------------------
-//  ゲームオブジェクトの確保
-//--------------------------------------------------------------------------------
-int CMode::SaveGameObj(const PRIORITY &pri, CGameObject *pGameObj)
-{
-	for (int nCnt = 0; nCnt < (int)m_avectorGameObj[pri].size(); nCnt++)
-	{
-		if (m_avectorGameObj[pri][nCnt] == NULL)
-		{
-			m_avectorGameObj[pri][nCnt] = pGameObj;
-			return nCnt;
-		}
+		m_pCamera->Set();
 	}
 
-	m_avectorGameObj[pri].push_back(pGameObj);
-	return (int)m_avectorGameObj[pri].size();
-}
-
-//--------------------------------------------------------------------------------
-//  ゲームオブジェクトの破棄
-//--------------------------------------------------------------------------------
-void CMode::ReleaseGameObj(const PRIORITY &pri, const int &nID)
-{
-	PRIORITY priCopy = pri;
-	int nIDCopy = nID;
-
-	if (m_avectorGameObj[priCopy][nIDCopy] != NULL)
-	{
-		delete m_avectorGameObj[priCopy][nIDCopy];
-		m_avectorGameObj[priCopy][nIDCopy] = NULL;
-	}
+	//オブジェクトの描画
+	GetManager()->GetGameObjectManager()->DrawAll();
 }

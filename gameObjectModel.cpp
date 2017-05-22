@@ -14,9 +14,8 @@
 #include "main.h"
 #include "manager.h"
 #include "rendererDX.h"
-#include "mode.h"
-#include "modelManager.h"
 #include "model.h"
+#include "modelX.h"
 #include "gameObject.h"
 #include "gameObjectModel.h"
 
@@ -27,9 +26,9 @@
 //  コンストラクタ
 //--------------------------------------------------------------------------------
 CGameObjectModel::CGameObjectModel() : CGameObject()
-	, m_vRot(CKFVec3(0.0f))
-	, m_nModelID(-1)
-	, m_matType(CMM::MAT_WHITE)
+, m_vRot(CKFVec3(0.0f))
+, m_modelName(CMOM::MODEL_NONE)
+, m_matType(CMM::MAT_MAX)
 {
 
 }
@@ -45,13 +44,11 @@ CGameObjectModel::~CGameObjectModel()
 //--------------------------------------------------------------------------------
 //  初期化処理
 //--------------------------------------------------------------------------------
-HRESULT CGameObjectModel::Init(const CKFVec3 &vPos, const CKFVec3 &vRot, const int &nModelID)
+void CGameObjectModel::Init(const CKFVec3 &vPos, const CKFVec3 &vRot, const CMOM::MODEL_NAME &modelName)
 {
 	m_vPos = vPos;
 	m_vRot = vRot;
-	m_nModelID = nModelID;
-
-	return S_OK;
+	m_modelName = modelName;
 }
 
 //--------------------------------------------------------------------------------
@@ -83,37 +80,44 @@ void CGameObjectModel::LateUpdate(void)
 //--------------------------------------------------------------------------------
 void CGameObjectModel::Draw(void)
 {
-	LPDIRECT3DDEVICE9 pDevice = GetManager()->GetRenderer()->GetDevice();
-	CModel *pModel = GetManager()->GetModelManager()->GetModel(m_nModelID);
+	CModel* pModel = GetManager()->GetModelManager()->GetModel(m_modelName);
 
 	if (pModel != NULL)
 	{
+		//チェックモデルタイプ
+		if (pModel->GetModelType() != CMOM::XFILE) { return; }
+
+		//キャスト
+		CModelX* pModelX = (CModelX*)pModel;
+
 		//RenderState設定
-		SetRenderState(pDevice);
+		SetRenderState();
 
 		//マトリックス設定
-		SetMatrix(pDevice);
+		SetMatrix();
 
 		//描画
 		if (m_matType != CMM::MAT_MAX)
 		{
-			pModel->Draw(pDevice, m_matType);
+			pModelX->Draw(m_matType);
 		}
 		else
 		{
-			pModel->Draw(pDevice);
+			pModelX->Draw();
 		}
 
 		//RenderState戻す
-		ResetRenderState(pDevice);
+		ResetRenderState();
 	}
 }
 
 //--------------------------------------------------------------------------------
 // SetWorldMatrix
 //--------------------------------------------------------------------------------
-void CGameObjectModel::SetMatrix(LPDIRECT3DDEVICE9 pDevice)
+void CGameObjectModel::SetMatrix(void)
 {
+	LPDIRECT3DDEVICE9 pDevice = GetManager()->GetRenderer()->GetDevice();
+
 	//ワールド相対座標
 	D3DXMATRIX mtxWorld;
 	D3DXMATRIX mtxRot;
@@ -136,7 +140,7 @@ void CGameObjectModel::SetMatrix(LPDIRECT3DDEVICE9 pDevice)
 //--------------------------------------------------------------------------------
 // SetRenderState
 //--------------------------------------------------------------------------------
-void CGameObjectModel::SetRenderState(LPDIRECT3DDEVICE9 pDevice)
+void CGameObjectModel::SetRenderState(void)
 {
 
 }
@@ -144,7 +148,7 @@ void CGameObjectModel::SetRenderState(LPDIRECT3DDEVICE9 pDevice)
 //--------------------------------------------------------------------------------
 // ResetRenderState
 //--------------------------------------------------------------------------------
-void CGameObjectModel::ResetRenderState(LPDIRECT3DDEVICE9 pDevice)
+void CGameObjectModel::ResetRenderState(void)
 {
 
 }
@@ -152,12 +156,12 @@ void CGameObjectModel::ResetRenderState(LPDIRECT3DDEVICE9 pDevice)
 //--------------------------------------------------------------------------------
 // 生成
 //--------------------------------------------------------------------------------
-CGameObjectModel *CGameObjectModel::Create(const CKFVec3 &vPos, const CKFVec3 &vRot, const int &nModelID)
+CGameObjectModel* CGameObjectModel::Create(const CKFVec3 &vPos, const CKFVec3 &vRot, const CMOM::MODEL_NAME &modelName)
 {
 	CGameObjectModel *pObjModel = NULL;
 	pObjModel = new CGameObjectModel;
-	pObjModel->Init(vPos, vRot, nModelID);
-	pObjModel->m_pri = CMode::PRI_3D;
-	pObjModel->m_nID = GetManager()->GetModeNow()->SaveGameObj(CMode::PRI_3D, pObjModel);
+	pObjModel->Init(vPos, vRot, modelName);
+	pObjModel->m_pri = GOM::PRI_3D;
+	pObjModel->m_nID = GetManager()->GetGameObjectManager()->SaveGameObj(GOM::PRI_3D, pObjModel);
 	return pObjModel;
 }

@@ -18,6 +18,7 @@
 //--------------------------------------------------------------------------------
 //  íËêîíËã`
 //--------------------------------------------------------------------------------
+#define CMOM CModelManager //CModelManagerÇÃó™èÃ
 
 //--------------------------------------------------------------------------------
 //  ëOï˚êÈåæ
@@ -36,22 +37,23 @@ public:
 		XFILE_MOTION,
 	};
 
-	enum DEMO_MODEL_NAME
+	enum MODEL_NAME
 	{
-		DEMO_MODEL_CUBE,
-		DEMO_MODEL_SELECTION_BOX,
-		DEMO_MODEL_STAIRS,
-		DEMO_MODEL_GOAL,
-		DEMO_MODEL_MAX
+		MODEL_NONE,
+		MODEL_CUBE,
+		MODEL_SELECTION_BOX,
+		MODEL_STAIRS,
+		MODEL_GOAL,
+		MODEL_MAX
 	};
 
 	CModelManager();
 	~CModelManager() {}
 
 	void	Init(void);
-	void	LoadAll(const CManager::MODE &mode);
+	void	LoadAll(void);
 	void	UnloadAll(void);
-	CModel	*GetModel(const int &nModelID);
+	CModel	*GetModel(const MODEL_NAME &modelName);
 private:
 	struct MODEL_INFO
 	{
@@ -59,10 +61,10 @@ private:
 		LPCSTR		path;
 	};
 
-	void Load(MODEL_INFO *pModelBegin, const int &nModelMax);
+	void Load(const MODEL_NAME &modelBegin, const MODEL_NAME &modelEnd);
 
 	std::vector<CModel*>	m_vectorModel;
-	static MODEL_INFO		m_apDemoModelInfo[DEMO_MODEL_MAX];
+	static MODEL_INFO		m_apModelInfo[MODEL_MAX];
 };
 
 #endif

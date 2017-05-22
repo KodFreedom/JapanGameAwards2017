@@ -13,6 +13,8 @@
 //--------------------------------------------------------------------------------
 //  インクルードファイル
 //--------------------------------------------------------------------------------
+#include "gameObject.h"
+#include "textureManager.h"
 
 //--------------------------------------------------------------------------------
 //  クラス宣言
@@ -23,15 +25,16 @@ public:
 	CGameObject2D();
 	~CGameObject2D();
 
-	HRESULT Init(const CKFVec3 &vPos, const float &fRot, const CKFVec2 &vSize, const int &nTexID);
-	void	Uninit(void);
-	void	Update(void);
-	void	LateUpdate(void);
-	void	Draw(void);
+	KFRESULT	Init(const CKFVec3 &vPos, const float &fRot, const CKFVec2 &vSize, const CTM::TEX_NAME &texName);
+	void		Uninit(void) override;
+	void		Update(void) override;
+	void		LateUpdate(void) override;
+	void		Draw(void) override;
 
+	static CGameObject2D* Create(const CKFVec3 &vPos, const float &fRot, const CKFVec2 &vSize, const CTM::TEX_NAME &texName);
 protected:
-	virtual void		SetRenderState(LPDIRECT3DDEVICE9 pDevice);
-	virtual void		ResetRenderState(LPDIRECT3DDEVICE9 pDevice);
+	virtual void		SetRenderState(void);
+	virtual void		ResetRenderState(void);
 
 	static const int	m_nNumVtx2D = 4;		//2Dオブジェクトの頂点数
 	static const int	m_nNumPolygon2D = 2;	//2Dオブジェクトのポリゴン数
@@ -40,13 +43,13 @@ protected:
 	CKFColor			m_cColor;				//カラー
 
 private:
-	HRESULT						MakeVertex(void);
-	void						UpdateVertex(void);
-	void						SetVtxPos(VERTEX_2D *pVtx);
-	void						SetVtxColor(VERTEX_2D *pVtx);
-	void						SetVtxUV(VERTEX_2D *pVtx);
+	KFRESULT			CreateBuffer(void);
+	void				UpdateVertex(void);
+	void				SetVtxPos(VERTEX_2D *pVtx);
+	void				SetVtxColor(VERTEX_2D *pVtx);
+	void				SetVtxUV(VERTEX_2D *pVtx);
 
-	int							m_nTexID;		//テクスチャ
+	CTM::TEX_NAME		m_texName;		//テクスチャ
 };
 
 #endif

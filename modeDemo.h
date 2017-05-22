@@ -27,7 +27,7 @@ public:
 	CModeDemo();
 	~CModeDemo();
 
-	HRESULT Init(void);
+	void	Init(void);
 	void	Uninit(void);
 	void	Update(void);
 	void	LateUpdate(void);

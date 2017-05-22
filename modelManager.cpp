@@ -15,6 +15,7 @@
 #include "modelManager.h"
 #include "model.h"
 #include "modelX.h"
+#include "modelActorX.h"
 
 //--------------------------------------------------------------------------------
 //  定数定義
@@ -23,8 +24,9 @@
 //--------------------------------------------------------------------------------
 //  静的メンバ変数
 //--------------------------------------------------------------------------------
-CModelManager::MODEL_INFO CModelManager::m_apDemoModelInfo[DEMO_MODEL_MAX] =
+CModelManager::MODEL_INFO CModelManager::m_apModelInfo[MODEL_MAX] =
 {
+	{ XFILE, NULL },
 	{ CModelManager::XFILE, "data/MODEL/cube.x" },				//cube
 	{ CModelManager::XFILE, "data/MODEL/selectionBox.x" },		//selection box
 	{ CModelManager::XFILE, "data/MODEL/stairs.x" },			//stairs
@@ -50,16 +52,9 @@ void CModelManager::Init(void)
 //--------------------------------------------------------------------------------
 //  モデルの読み込み
 //--------------------------------------------------------------------------------
-void CModelManager::LoadAll(const CManager::MODE &mode)
+void CModelManager::LoadAll(void)
 {
-	switch (mode)
-	{
-	case CManager::MODE_DEMO:
-		Load(&m_apDemoModelInfo[0], DEMO_MODEL_MAX);
-		break;
-	default:
-		break;
-	}
+	Load(MODEL_NONE, MODEL_MAX);
 }
 
 //--------------------------------------------------------------------------------
@@ -83,33 +78,37 @@ void CModelManager::UnloadAll(void)
 //--------------------------------------------------------------------------------
 //  モデルの取得
 //--------------------------------------------------------------------------------
-CModel *CModelManager::GetModel(const int &nModelID)
+CModel *CModelManager::GetModel(const MODEL_NAME &modelName)
 {
-	if (nModelID < 0 || nModelID >= (int)m_vectorModel.size()) { return NULL; }
+	if (modelName <= MODEL_NONE || modelName >= MODEL_MAX) { return NULL; }
 
-	return m_vectorModel[nModelID];
+	return m_vectorModel[(int)modelName];
 }
 
 //--------------------------------------------------------------------------------
 //  モデルの読み込み
 //--------------------------------------------------------------------------------
-void CModelManager::Load(MODEL_INFO *pModelBegin, const int &nModelMax)
+void CModelManager::Load(const MODEL_NAME &modelBegin, const MODEL_NAME &modelEnd)
 {
-	for (int nCnt = 0; nCnt < nModelMax; nCnt++)
+	for (int nCnt = modelBegin; nCnt < modelEnd; nCnt++)
 	{
 		CModel *pModel = NULL;
-		switch (pModelBegin->type)
+
+		if (m_apModelInfo[nCnt].path != NULL)
 		{
-		case XFILE:
-			pModel = CModelX::Create(pModelBegin->path);
-			break;
-		case XFILE_MOTION:
-			break;
-		default:
-			break;
+			switch (m_apModelInfo[nCnt].type)
+			{
+			case XFILE:
+				pModel = CModelX::Create(m_apModelInfo[nCnt].path);
+				break;
+			case XFILE_MOTION:
+				pModel = CModelActorX::Create(m_apModelInfo[nCnt].path);
+				break;
+			default:
+				break;
+			}
 		}
 
 		m_vectorModel.push_back(pModel);
-		pModelBegin++;
 	}
 }

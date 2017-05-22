@@ -13,8 +13,6 @@
 //--------------------------------------------------------------------------------
 #include "main.h"
 #include "manager.h"
-#include "textureManager.h"
-#include "modelManager.h"
 #include "lightManager.h"
 #include "mode.h"
 #include "modeDemo.h"
@@ -49,14 +47,8 @@ CModeDemo::~CModeDemo()
 //--------------------------------------------------------------------------------
 //  初期化処理
 //--------------------------------------------------------------------------------
-HRESULT CModeDemo::Init(void)
+void CModeDemo::Init(void)
 {
-	//テクスチャの読み込み
-	GetManager()->GetTextureManager()->LoadAll(CManager::MODE_DEMO);
-	
-	//モデルの読み込み
-	GetManager()->GetModelManager()->LoadAll(CManager::MODE_DEMO);
-
 	//ゲームオブジェクトの初期化
 	//CMeshField::Create(1, 1, CKFVec2(1.0f, 1.0f), CKFVec3(0.0f), CKFVec3(0.0f));
 	//CMeshCube::Create(CKFVec3(0.0f), CKFVec3(0.0f), CKFVec3(1.0f), CKFColor(1.0f));
@@ -69,8 +61,6 @@ HRESULT CModeDemo::Init(void)
 	//カメラの初期化
 	m_pCamera = new CCamera;
 	m_pCamera->Init();
-
-	return S_OK;
 }
 
 //--------------------------------------------------------------------------------
@@ -91,12 +81,6 @@ void CModeDemo::Uninit(void)
 		delete m_pCamera;
 		m_pCamera = NULL;
 	}
-
-	//モデルの破棄
-	GetManager()->GetModelManager()->UnloadAll();
-
-	//テクスチャの破棄
-	GetManager()->GetTextureManager()->UnloadAll();
 }
 
 //--------------------------------------------------------------------------------

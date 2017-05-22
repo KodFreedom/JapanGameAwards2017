@@ -144,6 +144,18 @@
     <ClInclude Include="stageEditor.h">
       <Filter>ヘッダー ファイル\GameObject\Stage</Filter>
     </ClInclude>
+    <ClInclude Include="gameObjectActor.h">
+      <Filter>ヘッダー ファイル\GameObject\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="modelActorX.h">
+      <Filter>ヘッダー ファイル\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="skyBox.h">
+      <Filter>ヘッダー ファイル\GameObject\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="gameObjectManager.h">
+      <Filter>ヘッダー ファイル\Base\Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="lightManager.cpp">
@@ -211,6 +223,21 @@
     </ClCompile>
     <ClCompile Include="stageEditor.cpp">
       <Filter>ソース ファイル\GameObject\Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="gameObjectActor.cpp">
+      <Filter>ソース ファイル\GameObject\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="skyBox.cpp">
+      <Filter>ソース ファイル\GameObject\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="gameObjectManager.cpp">
+      <Filter>ソース ファイル\Base\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="modelActorX.cpp">
+      <Filter>ソース ファイル\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="model.cpp">
+      <Filter>ソース ファイル\Model</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

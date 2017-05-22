@@ -31,22 +31,30 @@ public:
 	CRendererDX();
 	~CRendererDX();
 
-	HRESULT				Init(HWND hWnd,bool bWindow);
+	KFRESULT			Init(HWND hWnd, BOOL bWindow);
 	void				Uninit(void);
 	void				Update(void);
-	void				Draw(void);
+	KFRESULT			BeginDraw(void);
+	void				EndDraw(void);
+
+	//Get関数
 	LPDIRECT3DDEVICE9	GetDevice(void);
 
 private:
-#ifdef _DEBUG
-	void				DrawFPS(void);
-#endif
+	enum RENDER_MODE
+	{
+		RM_NORMAL,		//背面カリング、塗りつぶし
+		RM_WIREFRAME	//ワイヤーフレーム（デバッグ用）
+	};
 
-	LPDIRECT3D9				m_pD3D;			// Direct3Dオブジェクト
-	LPDIRECT3DDEVICE9		m_pD3DDevice;	// Deviceオブジェクト(描画に必要)
-	
+	void				SetRenderMode(const RENDER_MODE &rm);
+
+	LPDIRECT3D9			m_pD3D;			// Direct3Dオブジェクト
+	LPDIRECT3DDEVICE9	m_pD3DDevice;	// Deviceオブジェクト(描画に必要)
+
 #ifdef _DEBUG
-	LPD3DXFONT				m_pFont;		// フォントへのポインタ
+	void		DrawFPS(void);
+	LPD3DXFONT	m_pFont;		// フォントへのポインタ
 #endif
 };
 

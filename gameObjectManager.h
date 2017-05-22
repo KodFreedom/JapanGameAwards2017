@@ -1,47 +1,59 @@
 //--------------------------------------------------------------------------------
 //
-//　gameObject.cpp
+//　gameObjManager.h
 //	Author : Xu Wenjie
-//	Date   : 2017-04-26
+//	Date   : 2017-5-10
 //--------------------------------------------------------------------------------
 //  Update : 
 //	
 //--------------------------------------------------------------------------------
+#ifndef _GAME_OBJECT_MANAGER_H_
+#define _GAME_OBJECT_MANAGER_H_
 
 //--------------------------------------------------------------------------------
 //  インクルードファイル
 //--------------------------------------------------------------------------------
-#include "main.h"
-#include "manager.h"
-#include "gameObject.h"
 
 //--------------------------------------------------------------------------------
 //  定数定義
 //--------------------------------------------------------------------------------
+#define GOM CGameObjectManager	//GameObjectManagerの略称
 
 //--------------------------------------------------------------------------------
-//  クラス
+//  前方宣言
 //--------------------------------------------------------------------------------
-//--------------------------------------------------------------------------------
-//  破棄処理
-//--------------------------------------------------------------------------------
-void CGameObject::Release(void)
-{
-	GetManager()->GetGameObjectManager()->ReleaseGameObj(m_pri, m_nID);
-}
+class CGameObject;
 
 //--------------------------------------------------------------------------------
-//  座標取得
+//  クラス宣言
 //--------------------------------------------------------------------------------
-CKFVec3 CGameObject::GetPos(void)
+class CGameObjectManager
 {
-	return m_vPos;
-}
+public:
+	enum PRIORITY
+	{
+		PRI_3D,
+		PRI_3D_ALPHA,
+		PRI_2D,
+		PRI_MAX
+	};
 
-//--------------------------------------------------------------------------------
-//  座標設定
-//--------------------------------------------------------------------------------
-void CGameObject::SetPos(const CKFVec3 &vPos)
-{
-	m_vPos = vPos;
-}
+	CGameObjectManager();
+	~CGameObjectManager() {}
+
+	void	Init(void);
+	void	Uninit(void);
+
+	void	ReleaseAll(void);
+	void	UpdateAll(void);
+	void	LateUpdateAll(void);
+	void	DrawAll(void);
+
+	int		SaveGameObj(const PRIORITY &pri, CGameObject *pGameObj);
+	void	ReleaseGameObj(const PRIORITY &pri, const int &nID);
+
+private:
+	std::vector<CGameObject*>	m_avectorGameObj[PRI_MAX];
+};
+
+#endif

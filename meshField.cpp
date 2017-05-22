@@ -48,7 +48,7 @@ HRESULT CMeshField::Init(const int &nNumBlockX, const int &nNumBlockZ, const CKF
 	m_nNumBlockX = nNumBlockX;
 	m_nNumBlockZ = nNumBlockZ;
 	m_vBlockSize = vBlockSize;
-	m_nTexID = (int)CTextureManager::DEMO_TEX_ROAD;
+	m_texName = CTextureManager::TEX_ROAD;
 
 	int nVtxNum = (m_nNumBlockX + 1) * (m_nNumBlockZ + 1);
 	int nIdxNum = ((m_nNumBlockX + 1) * 2 + 2) * m_nNumBlockZ - 1;
@@ -133,7 +133,7 @@ CMeshField *CMeshField::Create(const int &nNumBlockX, const int &nNumBlockZ, con
 	CMeshField *pField = NULL;
 	pField = new CMeshField;
 	pField->Init(nNumBlockX, nNumBlockZ, vBlockSize, vPos, vRot);
-	pField->m_pri = CMode::PRI_3D;
-	pField->m_nID = GetManager()->GetModeNow()->SaveGameObj(CMode::PRI_3D, pField);
+	pField->m_pri = GOM::PRI_3D;
+	pField->m_nID = GetManager()->GetGameObjectManager()->SaveGameObj(pField->m_pri, pField);
 	return pField;
 }

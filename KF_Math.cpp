@@ -12,9 +12,6 @@
 //  インクルードファイル
 //--------------------------------------------------------------------------------
 #include "KF_Math.h"
-#include "main.h"
-#include "manager.h"
-#include "rendererDX.h"
 
 //--------------------------------------------------------------------------------
 //  静的メンバ変数
@@ -240,6 +237,40 @@ void CKFVec3::operator*=(const CKFVec3 &vValue)
 }
 
 //--------------------------------------------------------------------------------
+//  operator/(float)
+//--------------------------------------------------------------------------------
+CKFVec3 CKFVec3::operator/(const float &fValue) const
+{
+	CKFVec3 vAnswer = CKFVec3(0.0f);
+
+	if (fValue != 0.0f)
+	{
+		vAnswer.m_fX = m_fX / fValue;
+		vAnswer.m_fY = m_fY / fValue;
+		vAnswer.m_fZ = m_fZ / fValue;
+	}
+
+	return vAnswer;
+}
+
+//--------------------------------------------------------------------------------
+//  operator/=(float)
+//--------------------------------------------------------------------------------
+void CKFVec3::operator/=(const float &fValue)
+{
+	CKFVec3 vAnswer = CKFVec3(0.0f);
+
+	if (fValue != 0.0f)
+	{
+		vAnswer.m_fX = m_fX / fValue;
+		vAnswer.m_fY = m_fY / fValue;
+		vAnswer.m_fZ = m_fZ / fValue;
+	}
+
+	*this = vAnswer;
+}
+
+//--------------------------------------------------------------------------------
 //  CKFMtx44
 //--------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------
@@ -255,9 +286,6 @@ CKFMtx44::CKFMtx44()
 	memcpy(m_af, afMtx, sizeof(m_af));
 }
 
-//--------------------------------------------------------------------------------
-//  CKFVec4
-//--------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------
 //  コンストラクタ
 //--------------------------------------------------------------------------------
@@ -283,6 +311,25 @@ CKFMtx44::CKFMtx44(
 	m_af[3][1] = f42;
 	m_af[3][2] = f43;
 	m_af[3][3] = f44;
+}
+
+//--------------------------------------------------------------------------------
+//  キャスト(D3DXVECTOR3)
+//	DXの環境のためオーバーロードする
+//--------------------------------------------------------------------------------
+CKFMtx44::operator D3DXMATRIX() const
+{
+	D3DXMATRIX mtxValue;
+
+	for (int nCntY = 0; nCntY < 4; nCntY++)
+	{
+		for (int nCntX = 0; nCntX < 4; nCntX++)
+		{
+			mtxValue(nCntY, nCntX) = m_af[nCntY][nCntX];
+		}
+	}
+
+	return mtxValue;
 }
 
 //--------------------------------------------------------------------------------
@@ -312,14 +359,14 @@ CKFMtx44 CKFMtx44::operator*(const CKFMtx44 &mtxValue) const
 	{
 		for (int nCntX = 0; nCntX < 4; nCntX++)
 		{
-			mtxAnswer.m_af[nCntY][nCntX] = 
-				m_af[nCntY][0] * mtxValue.m_af[0][nCntX] + 
-				m_af[nCntY][1] * mtxValue.m_af[1][nCntX] + 
-				m_af[nCntY][2] * mtxValue.m_af[2][nCntX] + 
+			mtxAnswer.m_af[nCntY][nCntX] =
+				m_af[nCntY][0] * mtxValue.m_af[0][nCntX] +
+				m_af[nCntY][1] * mtxValue.m_af[1][nCntX] +
+				m_af[nCntY][2] * mtxValue.m_af[2][nCntX] +
 				m_af[nCntY][3] * mtxValue.m_af[3][nCntX];
-		}								    
-	}									   
-										   
+		}
+	}
+
 	return mtxAnswer;
 }
 
@@ -454,16 +501,22 @@ CKFColor::operator D3DCOLORVALUE() const
 //  キャスト(unsigned long)
 //	DXの環境で頂点情報のカラーはDWORD(unsigned long)のためオーバーロードする
 //--------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------
+//  キャスト(D3DCOLORVALUE)
+//--------------------------------------------------------------------------------
 CKFColor::operator unsigned long() const
 {
-	return (unsigned long)((((unsigned long)(m_fA * 255.0f) & 0xff) << 24) 
-		| (((unsigned long)(m_fR * 255.0f) & 0xff) << 16) 
-		| (((unsigned long)(m_fG * 255.0f) & 0xff) << 8) 
+	return (unsigned long)((((unsigned long)(m_fA * 255.0f) & 0xff) << 24)
+		| (((unsigned long)(m_fR * 255.0f) & 0xff) << 16)
+		| (((unsigned long)(m_fG * 255.0f) & 0xff) << 8)
 		| ((unsigned long)(m_fB * 255.0f) & 0xff));
 }
 
 //--------------------------------------------------------------------------------
 //  CKFMath
+//--------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------
+//  Vector
 //--------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------
 //  Magnitude(Vector2)
@@ -531,6 +584,50 @@ float CKFMath::Vec3Dot(const CKFVec3 &vVecL, const CKFVec3 &vVecR)
 }
 
 //--------------------------------------------------------------------------------
+//  VecDistance(Vector3)
+//--------------------------------------------------------------------------------
+float CKFMath::VecDistance(const CKFVec3 &vVecL, const CKFVec3 &vVecR)
+{
+	CKFVec3 vDis = vVecL - vVecR;
+	float fDis = VecMagnitude(vDis);
+	return fDis;
+}
+
+//--------------------------------------------------------------------------------
+//  Vec3TransformCoord
+//	回転行列にとってVec3を回転する
+//--------------------------------------------------------------------------------
+void CKFMath::Vec3TransformCoord(CKFVec3 *pVec, const CKFMtx44 &mtxRot)
+{
+	CKFVec4 vVec = CKFVec4(*pVec, 1.0f);
+	vVec *= mtxRot;
+
+	if (vVec.m_fW != 0.0f)
+	{
+		pVec->m_fX = vVec.m_fX / vVec.m_fW;
+		pVec->m_fY = vVec.m_fY / vVec.m_fW;
+		pVec->m_fZ = vVec.m_fZ / vVec.m_fW;
+	}
+}
+
+//--------------------------------------------------------------------------------
+//  Vec3TransformNormal
+//	回転行列にとってVec3(ベクトル)を回転する
+//--------------------------------------------------------------------------------
+void CKFMath::Vec3TransformNormal(CKFVec3 *pVec, const CKFMtx44 &mtxRot)
+{
+	CKFVec4 vVec = CKFVec4(*pVec, 0.0f);
+	vVec *= mtxRot;
+
+	pVec->m_fX = vVec.m_fX;
+	pVec->m_fY = vVec.m_fY;
+	pVec->m_fZ = vVec.m_fZ;
+}
+
+//--------------------------------------------------------------------------------
+//  Matrix
+//--------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------
 //  ChangeDXMtxToMtx44
 //--------------------------------------------------------------------------------
 CKFMtx44 CKFMath::ChangeDXMtxToMtx44(const D3DXMATRIX &mtx)
@@ -572,18 +669,18 @@ void CKFMath::MtxRotAxis(CKFMtx44 *pMtxRot, const CKFVec3 &vAxis, const float &f
 	VecNormalize(&vAxisCpy);
 
 	//回転の距離算出
-	float fLength = sinf(fAngle);   
+	float fLength = sinf(fAngle);
 
 	//軸に距離をかける
 	vAxisCpy *= fLength;
 
 	//計算用変数
 	float fA = vAxisCpy.m_fX;
-	float fB = vAxisCpy.m_fY;  
-	float fC = vAxisCpy.m_fZ;     
-	float fD = cosf(fAngle);  
-	float fT =  (1 - fD) / (fLength * fLength);  
-	
+	float fB = vAxisCpy.m_fY;
+	float fC = vAxisCpy.m_fZ;
+	float fD = cosf(fAngle);
+	float fT = (1 - fD) / (fLength * fLength);
+
 	*pMtxRot = CKFMtx44(
 		fA * fT * fA + fD, fB * fT * fA + fC, fC * fT * fA - fB, 0.0f,
 		fA * fT * fB - fC, fB * fT * fB + fD, fC * fT * fB + fA, 0.0f,
@@ -592,56 +689,59 @@ void CKFMath::MtxRotAxis(CKFMtx44 *pMtxRot, const CKFVec3 &vAxis, const float &f
 }
 
 //--------------------------------------------------------------------------------
-//  Vec3TransformCoord
-//	回転行列にとってVec3(座標)を回転する
+//  MtxRotationYawPitchRoll
+//	回転行列の作成(mtxY*mtxX*mtxZ)
 //--------------------------------------------------------------------------------
-void CKFMath::Vec3TransformCoord(CKFVec3 *pVec, const CKFMtx44 &mtxRot)
+void CKFMath::MtxRotationYawPitchRoll(CKFMtx44 *pMtxRot, const CKFVec3 &vRot)
 {
-	CKFVec4 vVec = CKFVec4(*pVec, 1.0f);
-	vVec *= mtxRot;
+	float fSinX = sinf(vRot.m_fX);
+	float fCosX = cosf(vRot.m_fX);
+	float fSinY = sinf(vRot.m_fY);
+	float fCosY = cosf(vRot.m_fY);
+	float fSinZ = sinf(vRot.m_fZ);
+	float fCosZ = cosf(vRot.m_fZ);
 
-	if (vVec.m_fW != 0.0f)
-	{
-		pVec->m_fX = vVec.m_fX / vVec.m_fW;
-		pVec->m_fY = vVec.m_fY / vVec.m_fW;
-		pVec->m_fZ = vVec.m_fZ / vVec.m_fW;
-	}
+	pMtxRot->m_af[0][0] = fCosZ * fCosY - fSinX * fSinY * fSinZ;
+	pMtxRot->m_af[0][1] = fCosY * fSinZ + fSinX * fSinY * fCosZ;
+	pMtxRot->m_af[0][2] = -fSinY * fCosX;
+	pMtxRot->m_af[0][3] = 0.0f;
+	pMtxRot->m_af[1][0] = -fCosX * fSinZ;
+	pMtxRot->m_af[1][1] = fCosX * fCosZ;
+	pMtxRot->m_af[1][2] = fSinX;
+	pMtxRot->m_af[1][3] = 0.0f;
+	pMtxRot->m_af[2][0] = fSinY * fCosZ + fSinX * fCosY * fSinZ;
+	pMtxRot->m_af[2][1] = fSinY * fSinZ - fSinX * fCosY * fCosZ;
+	pMtxRot->m_af[2][2] = fCosX * fCosY;
+	pMtxRot->m_af[2][3] = 0.0f;
+	pMtxRot->m_af[3][0] = 0.0f;
+	pMtxRot->m_af[3][1] = 0.0f;
+	pMtxRot->m_af[3][2] = 0.0f;
+	pMtxRot->m_af[3][3] = 1.0f;
 }
 
 //--------------------------------------------------------------------------------
-//  Vec3TransformNormal
-//	回転行列にとってVec3(ベクトル)を回転する
+//	MtxTranslation
+//	平行移動行列の作成
 //--------------------------------------------------------------------------------
-void CKFMath::Vec3TransformNormal(CKFVec3 *pVec, const CKFMtx44 &mtxRot)
+void CKFMath::MtxTranslation(CKFMtx44 *pMtxTrans, const CKFVec3 &vPos)
 {
-	CKFVec4 vVec = CKFVec4(*pVec, 0.0f);
-	vVec *= mtxRot;
-
-	pVec->m_fX = vVec.m_fX;
-	pVec->m_fY = vVec.m_fY;
-	pVec->m_fZ = vVec.m_fZ;
+	MtxIdentity(pMtxTrans);
+	pMtxTrans->m_af[3][0] = vPos.m_fX;
+	pMtxTrans->m_af[3][1] = vPos.m_fY;
+	pMtxTrans->m_af[3][2] = vPos.m_fZ;
 }
 
+//--------------------------------------------------------------------------------
+//  Ray
+//--------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------
 //  CalculatePickingRay
 //	スクリーン上のポインタから3D空間の射線を求める関数
 //--------------------------------------------------------------------------------
-CKFRay CKFMath::CalculatePickingRay(const CKFVec2 &vScreenPos, const CKFMtx44 &mtxViewInverse)
+CKFRay CKFMath::CalculatePickingRay(const CKFVec2 &vScreenPos, const float &fViewportWidth, const float &fViewportHeight, const float &fProjMtx00, const float &fProjMtx11, const CKFMtx44 &mtxViewInverse)
 {
-	CKFRay ray = ChangePosToRay(vScreenPos);
+	CKFRay ray = ChangePosToRay(vScreenPos, fViewportWidth, fViewportHeight, fProjMtx00, fProjMtx11);
 	TransformRay(&ray, mtxViewInverse);
-	return ray;
-}
-
-//--------------------------------------------------------------------------------
-//  CalculatePickingRay(DX)
-//	スクリーン上のポインタから3D空間の射線を求める関数
-//--------------------------------------------------------------------------------
-CKFRay CKFMath::CalculatePickingRay(const CKFVec2 &vScreenPos, const D3DXMATRIX &mtxViewInverse)
-{
-	CKFRay ray = ChangePosToRay(vScreenPos);
-	CKFMtx44 mtx = ChangeDXMtxToMtx44(mtxViewInverse);
-	TransformRay(&ray, mtx);
 	return ray;
 }
 
@@ -649,18 +749,12 @@ CKFRay CKFMath::CalculatePickingRay(const CKFVec2 &vScreenPos, const D3DXMATRIX 
 //  ChangePosToRay
 //	スクリーン上のポインタから3D空間の射線を求める関数
 //--------------------------------------------------------------------------------
-CKFRay CKFMath::ChangePosToRay(const CKFVec2 &vScreenPos)
+CKFRay CKFMath::ChangePosToRay(const CKFVec2 &vScreenPos, const float &fViewportWidth, const float &fViewportHeight, const float &fProjMtx00, const float &fProjMtx11)
 {
 	CKFVec2 vPos3D;
-	LPDIRECT3DDEVICE9 pDevice = GetManager()->GetRenderer()->GetDevice();
-	D3DVIEWPORT9 vp;
-	pDevice->GetViewport(&vp);
 
-	D3DXMATRIX mtxProjection;
-	pDevice->GetTransform(D3DTS_PROJECTION, &mtxProjection);
-
-	vPos3D.m_fX = (((2.0f * vScreenPos.m_fX) / vp.Width) - 1.0f) / mtxProjection(0, 0);
-	vPos3D.m_fY = (((-2.0f * vScreenPos.m_fY) / vp.Height) + 1.0f) / mtxProjection(1, 1);
+	vPos3D.m_fX = (((2.0f * vScreenPos.m_fX) / fViewportWidth) - 1.0f) / fProjMtx00;
+	vPos3D.m_fY = (((-2.0f * vScreenPos.m_fY) / fViewportHeight) + 1.0f) / fProjMtx11;
 
 	CKFRay ray;
 	ray.m_vOrigin = CKFVec3(0.0f);
@@ -684,7 +778,7 @@ void CKFMath::TransformRay(CKFRay *pRay, const CKFMtx44 &mtxTrans)
 //  ContactRaytoSphere
 //	レイとスフィアの当たり判定
 //--------------------------------------------------------------------------------
-CKFMath::RTS_INFO CKFMath::ContactRaytoSphere(const CKFRay &ray, const CKFVec3 &vSpherePos, const float &fRadius)
+CKFMath::RTS_INFO CKFMath::ContactRayToSphere(const CKFRay &ray, const CKFVec3 &vSpherePos, const float &fRadius)
 {
 	RTS_INFO info;
 	CKFVec3 vOriginToSphere;
@@ -697,7 +791,7 @@ CKFMath::RTS_INFO CKFMath::ContactRaytoSphere(const CKFRay &ray, const CKFVec3 &
 	vOriginToSphere = ray.m_vOrigin - vSpherePos;
 	fWorkA = 2.0f * Vec3Dot(ray.m_vDirection, vOriginToSphere);
 	fWorkB = Vec3Dot(vOriginToSphere, vOriginToSphere) - fRadius * fRadius;
-	
+
 	fDiscriminant = fWorkA * fWorkA - 4.0f * fWorkB;
 
 	if (fDiscriminant < 0.0f)
@@ -718,11 +812,69 @@ CKFMath::RTS_INFO CKFMath::ContactRaytoSphere(const CKFRay &ray, const CKFVec3 &
 		fTimeA = fTimeA < 0.0f ? fTimeB : fTimeA;
 		fTimeB = fTimeB < 0.0f ? fTimeA : fTimeB;
 		info.fTimingMin = fTimeA <= fTimeB ? fTimeA : fTimeB;
-		
+
 		return info;
 	}
 
 	return info;
+}
+
+//--------------------------------------------------------------------------------
+//  Others
+//--------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------
+//  NormalizeRotInTwoPi(float)
+//	回転を-2Piから2Piの間にする
+//--------------------------------------------------------------------------------
+void CKFMath::NormalizeRotInTwoPi(float* pRot)
+{
+	while (*pRot >= KF_PI * 2.0f)
+	{
+		*pRot -= KF_PI * 2.0f;
+	}
+
+	while (*pRot <= -KF_PI * 2.0f)
+	{
+		*pRot += KF_PI * 2.0f;
+	}
+}
+
+//--------------------------------------------------------------------------------
+//  NormalizeRotInTwoPi(Vec3)
+//	回転を-2Piから2Piの間にする
+//--------------------------------------------------------------------------------
+void CKFMath::NormalizeRotInTwoPi(CKFVec3* pRot)
+{
+	NormalizeRotInTwoPi(&pRot->m_fX);
+	NormalizeRotInTwoPi(&pRot->m_fY);
+	NormalizeRotInTwoPi(&pRot->m_fZ);
+}
+
+//--------------------------------------------------------------------------------
+//  NormalizeRotInPi(float)
+//	回転を-PiからPiの間にする
+//--------------------------------------------------------------------------------
+void CKFMath::NormalizeRotInPi(float* pRot)
+{
+	if (*pRot > KF_PI)
+	{
+		*pRot -= KF_PI * 2.0f;
+	}
+	else if (*pRot < -KF_PI)
+	{
+		*pRot += KF_PI * 2.0f;
+	}
+}
+
+//--------------------------------------------------------------------------------
+//  NormalizeRotInPi(Vec3)
+//	回転を-PiからPiの間にする
+//--------------------------------------------------------------------------------
+void CKFMath::NormalizeRotInPi(CKFVec3* pRot)
+{
+	NormalizeRotInPi(&pRot->m_fX);
+	NormalizeRotInPi(&pRot->m_fY);
+	NormalizeRotInPi(&pRot->m_fZ);
 }
 
 //--------------------------------------------------------------------------------

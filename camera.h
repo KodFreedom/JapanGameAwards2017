@@ -20,6 +20,12 @@
 class CCamera
 {
 public:
+	enum CAMERA_DEFAULT
+	{
+		DEFAULT_FOV = 75,
+		DEFAULT_FAR = 1000
+	};
+
 	CCamera();
 	~CCamera();
 
@@ -27,6 +33,7 @@ public:
 	void Uninit(void);
 	void Update(void);
 	void LateUpdate(void);
+	void Set(void);
 
 	void MoveCamera(const CKFVec3 &vMovement);
 	void LookAtHere(const CKFVec3 &vPos);

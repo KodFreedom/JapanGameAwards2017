@@ -291,9 +291,7 @@ void CStageEditor::UpdateChooseBlock(void)
 	//レイ算出
 	CMouseDX *pMouse = GetManager()->GetMouse();
 	POINT pMousePos = pMouse->GetMousePos();
-	CCamera *pCamera = GetManager()->GetModeNow()->GetCamera();
-	D3DXMATRIX mtx = pCamera->GetMtxViewInverse();
-	CKFRay ray = CKFMath::CalculatePickingRay(CKFVec2((float)pMousePos.x, (float)pMousePos.y), mtx);
+	CKFRay ray = CKFUtilityDX::ChangeToPickingRay(CKFVec2((float)pMousePos.x, (float)pMousePos.y));
 
 	//計算用変数
 	CKFMath::RTS_INFO rtsMin;
@@ -308,7 +306,7 @@ void CStageEditor::UpdateChooseBlock(void)
 		//距離が一番近いのブロックを選ぶ
 		if (itr->nLayer == m_nActLayer)
 		{
-			CKFMath::RTS_INFO rts = CKFMath::ContactRaytoSphere(ray, itr->vPos, 0.5f);
+			CKFMath::RTS_INFO rts = CKFMath::ContactRayToSphere(ray, itr->vPos, 0.5f);
 			if (rts.bIsContact)
 			{
 				if (m_selectionBox.pChoosenBlock == NULL)
@@ -342,7 +340,7 @@ void CStageEditor::DrawBlock(const BLOCK &block, LPDIRECT3DDEVICE9 pDevice, cons
 {
 	CModel *pModel = NULL;
 	CMM::MATERIAL mat = CMM::MAT_NORMAL;
-	CTM::DEMO_TEX_NAME texture = CTM::DEMO_TEX_MAX;
+	CTM::TEX_NAME texture = CTM::TEX_MAX;
 
 	//ワールド相対座標
 	D3DXMATRIX mtxWorld;
@@ -372,19 +370,19 @@ void CStageEditor::DrawBlock(const BLOCK &block, LPDIRECT3DDEVICE9 pDevice, cons
 	case BT_NONE:
 		return;
 	case BT_WHITE:
-		pModel = GetManager()->GetModelManager()->GetModel(CModelManager::DEMO_MODEL_CUBE);
+		pModel = GetManager()->GetModelManager()->GetModel(CModelManager::MODEL_CUBE);
 		mat = CMM::MAT_WHITE;
 		break;
 	case BT_BLACK:
-		pModel = GetManager()->GetModelManager()->GetModel(CModelManager::DEMO_MODEL_CUBE);
+		pModel = GetManager()->GetModelManager()->GetModel(CModelManager::MODEL_CUBE);
 		mat = CMM::MAT_BLACK;
 		break;
 	case BT_STAIRS:
-		pModel = GetManager()->GetModelManager()->GetModel(CModelManager::DEMO_MODEL_STAIRS);
+		pModel = GetManager()->GetModelManager()->GetModel(CModelManager::MODEL_STAIRS);
 		mat = CMM::MAT_GRAY;
 		break;
 	case BT_GOAL:
-		pModel = GetManager()->GetModelManager()->GetModel(CModelManager::DEMO_MODEL_GOAL);
+		pModel = GetManager()->GetModelManager()->GetModel(CModelManager::MODEL_GOAL);
 		mat = CMM::MAT_GOLDEN;
 		break;
 	default:
@@ -394,11 +392,11 @@ void CStageEditor::DrawBlock(const BLOCK &block, LPDIRECT3DDEVICE9 pDevice, cons
 	switch (block.status)
 	{
 	case BS_NONE:
-		pModel->Draw(pDevice, mat);
+		pModel->Draw(mat);
 		break;
 	case BS_DIS_CHOOSE:
-		texture = CTM::DEMO_TEX_POLYGON_ALPHA;
-		pModel->Draw(pDevice, mat, texture);
+		texture = CTM::TEX_POLYGON_ALPHA;
+		pModel->Draw(mat, texture);
 		break;
 	default:
 		break;
@@ -432,9 +430,9 @@ void CStageEditor::DrawSelectionBox(LPDIRECT3DDEVICE9 pDevice, const D3DXMATRIX 
 
 	pDevice->SetTransform(D3DTS_WORLD, &mtxWorld);
 
-	CModel *pModel = GetManager()->GetModelManager()->GetModel(CModelManager::DEMO_MODEL_SELECTION_BOX);
+	CModel *pModel = GetManager()->GetModelManager()->GetModel(CModelManager::MODEL_SELECTION_BOX);
 	CMM::MATERIAL mat = m_selectionBox.bSelected ? CMM::MAT_RED_CHOOSEN : CMM::MAT_RED;
-	pModel->Draw(pDevice, mat);
+	pModel->Draw(mat);
 }
 
 //--------------------------------------------------------------------------------
@@ -445,8 +443,8 @@ CStageEditor *CStageEditor::Create(const CKFVec3 &vPos, const CKFVec3 &vRot)
 	CStageEditor *pStage = NULL;
 	pStage = new CStageEditor;
 	pStage->Init(vPos, vRot);
-	pStage->m_pri = CMode::PRI_3D;
-	pStage->m_nID = GetManager()->GetModeNow()->SaveGameObj(CMode::PRI_3D, pStage);
+	pStage->m_pri = GOM::PRI_3D;
+	pStage->m_nID = GetManager()->GetGameObjectManager()->SaveGameObj(pStage->m_pri, pStage);
 	return pStage;
 }
 
