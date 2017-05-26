@@ -59,19 +59,19 @@ HRESULT CStageEditor::Init(const CKFVec3 &vPos, const CKFVec3 &vRot)
 	m_vRot = vRot;
 
 	//操作できるレイヤー初期化
-	m_nActLayer = (m_nNumBlockPerAxis - 1) / 2;
+	m_nActLayer = (s_nNumBlockPerAxis - 1) / 2;
 
-	int nHalf = m_nNumBlockPerAxis / 2;
+	int nHalf = s_nNumBlockPerAxis / 2;
 	CKFVec3 vStart = CKFVec3(nHalf * -1.0f, nHalf * 1.0f, nHalf * -1.0f);
-	for (int nCntZ = 0; nCntZ < m_nNumBlockPerAxis; nCntZ++)
+	for (int nCntZ = 0; nCntZ < s_nNumBlockPerAxis; nCntZ++)
 	{
-		for (int nCntY = 0; nCntY < m_nNumBlockPerAxis; nCntY++)
+		for (int nCntY = 0; nCntY < s_nNumBlockPerAxis; nCntY++)
 		{
-			for (int nCntX = 0; nCntX < m_nNumBlockPerAxis; nCntX++)
+			for (int nCntX = 0; nCntX < s_nNumBlockPerAxis; nCntX++)
 			{
 				BLOCK block;
 
-				int nNo = nCntZ * m_nNumBlockPerAxis * m_nNumBlockPerAxis + nCntY * m_nNumBlockPerAxis + nCntX;
+				int nNo = nCntZ * s_nNumBlockPerAxis * s_nNumBlockPerAxis + nCntY * s_nNumBlockPerAxis + nCntX;
 				block.type = (nNo % 2) == 0 ? BT_WHITE : BT_BLACK;
 				block.status = BS_NONE;
 				block.vPos = vStart + CKFVec3(nCntX * 1.0f, nCntY * -1.0f, nCntZ * 1.0f);
@@ -143,17 +143,17 @@ void CStageEditor::Update(void)
 			//操作できるレイヤーの変更
 			if (pKeyboard->GetKeyTrigger(DIK_UP))
 			{
-				m_nActLayer = (m_nActLayer + 1) % ((m_nNumBlockPerAxis - 1) / 2 + 1);
+				m_nActLayer = (m_nActLayer + 1) % ((s_nNumBlockPerAxis - 1) / 2 + 1);
 			}
 
 			if (pKeyboard->GetKeyTrigger(DIK_DOWN))
 			{
 				m_nActLayer--;
-				m_nActLayer = m_nActLayer < 0 ? (m_nNumBlockPerAxis - 1) / 2 : m_nActLayer;
+				m_nActLayer = m_nActLayer < 0 ? (s_nNumBlockPerAxis - 1) / 2 : m_nActLayer;
 			}
 
 			//マウスレイとブロックの当たり判定更新
-			UpdateChooseBlock();
+			CheckWhichIsChoosen();
 		}
 
 		//ステータス更新
@@ -286,7 +286,7 @@ void CStageEditor::UpdateSelectionBox(void)
 //--------------------------------------------------------------------------------
 //  マウスレイとブロックの当たり判定更新
 //--------------------------------------------------------------------------------
-void CStageEditor::UpdateChooseBlock(void)
+void CStageEditor::CheckWhichIsChoosen(void)
 {
 	//レイ算出
 	CMouseDX *pMouse = GetManager()->GetMouse();

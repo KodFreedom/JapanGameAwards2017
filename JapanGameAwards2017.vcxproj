@@ -156,6 +156,7 @@
     <ClInclude Include="gameObjectActor.h" />
     <ClInclude Include="gameObjectManager.h" />
     <ClInclude Include="gameObjectModel.h" />
+    <ClInclude Include="heroin.h" />
     <ClInclude Include="inputDX.h" />
     <ClInclude Include="KF_Math.h" />
     <ClInclude Include="KF_UtilityDX.h" />

@@ -35,6 +35,7 @@ public:
 		PRI_3D,
 		PRI_3D_ALPHA,
 		PRI_2D,
+		PRI_2D_MASK,
 		PRI_MAX
 	};
 

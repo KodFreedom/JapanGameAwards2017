@@ -33,7 +33,7 @@ public:
 private:
 
 	void UpdateSelectionBox(void);
-	void UpdateChooseBlock(void);
+	void CheckWhichIsChoosen(void);
 	void DrawBlock(const BLOCK &block, LPDIRECT3DDEVICE9 pDevice, const D3DXMATRIX &mtxRotStage, const D3DXMATRIX &mtxPosStage);
 	void DrawSelectionBox(LPDIRECT3DDEVICE9 pDevice, const D3DXMATRIX &mtxRotStage, const D3DXMATRIX &mtxPosStage);
 	void SaveStage(void);

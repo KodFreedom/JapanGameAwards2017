@@ -26,15 +26,15 @@ public:
 	CGameObjectActor();
 	~CGameObjectActor() {};
 
-	void	Init(const CKFVec3 &vPos, const CKFVec3 &vRot, const CMOM::MODEL_NAME &modelName);
-	void	Uninit(void) override;
-	void	Update(void) override;
-	void	LateUpdate(void) override;
-	void	Draw(void) override;
+	virtual void	Init(const CKFVec3 &vPos, const CKFVec3 &vRot, const CMOM::MODEL_NAME &modelName);
+	void			Uninit(void) override;
+	virtual void	Update(void) override;
+	virtual void	LateUpdate(void) override;
+	void			Draw(void) override;
 
 	static CGameObjectActor*	Create(const CKFVec3 &vPos, const CKFVec3 &vRot, const CMOM::MODEL_NAME &modelName);
 
-private:
+protected:
 	//--------------------------------------------------------------------------------
 	//  ç\ë¢ëÃíËã`
 	//--------------------------------------------------------------------------------
