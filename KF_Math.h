@@ -114,7 +114,7 @@ class CKFVec3N
 {
 public:
 	CKFVec3N() : m_nX(0), m_nY(0), m_nZ(0) {}
-	CKFVec3N(const int &nX, const int &nY, const float &nZ) : m_nX(nX), m_nY(nY), m_nZ(nZ) {}
+	CKFVec3N(const int &nX, const int &nY, const int &nZ) : m_nX(nX), m_nY(nY), m_nZ(nZ) {}
 	~CKFVec3N() {}
 
 	int m_nX;

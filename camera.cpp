@@ -43,7 +43,7 @@
 CCamera::CCamera()
 	: m_vMovement(CKFVec3(0.0f))
 	, m_vPosAt(CKFVec3(0.0f))
-	, m_vPosEye(CKFVec3(0.0f, 1.0f, -1.0f))
+	, m_vPosEye(CKFVec3(0.0f, 5.0f, -5.0f))
 	, m_vVecLook(CKFVec3(0.0f))
 	, m_vVecUp(CKFVec3(0.0f, 1.0f, 0.0f))
 	, m_vVecRight(CKFVec3(1.0f, 0.0f, 0.0f))

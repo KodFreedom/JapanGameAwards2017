@@ -14,6 +14,12 @@
 //  前方宣言
 //--------------------------------------------------------------------------------
 class CHeroin;
+class CGameObject2D;
+
+//--------------------------------------------------------------------------------
+//  インクルードファイル
+//--------------------------------------------------------------------------------
+#include "gameObject.h"
 
 //--------------------------------------------------------------------------------
 //  クラス宣言
@@ -45,13 +51,17 @@ public:
 	CStage();
 	~CStage() {}
 
-	virtual HRESULT		Init(const CKFVec3 &vPos, const CKFVec3 &vRot, const LPSTR &stagePath);
+	virtual HRESULT		Init(const CKFVec3 &vPos, const CKFVec3 &vRot, const int &nStage);
 	virtual void		Uninit(void);
 	virtual void		Update(void);
 	virtual void		LateUpdate(void);
 	virtual void		Draw(void);
 
-	static CStage*		Create(const CKFVec3 &vPos, const CKFVec3 &vRot, const LPSTR &stagePath);
+	BLOCK_TYPE			GetBlockType(const int &nZ, const int &nY, const int &nX);
+	CKFVec3				GetBlockRot(const int &nZ, const int &nY, const int &nX);
+
+
+	static CStage*		Create(const CKFVec3 &vPos, const CKFVec3 &vRot, const int &nStage);
 
 public:
 	//--------------------------------------------------------------------------------
@@ -67,6 +77,16 @@ public:
 		BS_WAIT_CHANGE,
 		BS_CHANGING,
 		BS_MAX
+	};
+
+	struct BLOCK_FOR_LOAD
+	{
+		float			fZDepth;
+		int				nLayer;
+		CKFVec3			vPos;
+		CKFVec3			vRot;
+		BLOCK_TYPE		type;
+		BLOCK_STATUS	status;
 	};
 
 	struct BLOCK
@@ -127,6 +147,8 @@ private:
 	//--------------------------------------------------------------------------------
 	static const int s_nCntForChange = 10;
 	static const int s_nCntWaitChange = 5;
+	static const int s_nNumUndoMax = 3;
+	static const int s_nNumStageMax = 10;
 
 	//--------------------------------------------------------------------------------
 	//  クラス内のクラス宣言
@@ -163,8 +185,12 @@ private:
 	void SetByChangeList(std::list<CKFVec3N> &listChange, const BLOCK_TYPE &checkType, CChangeBlock* pChangeBlock);
 	void SaveDoing(void);
 	void LoadLastDone(void);
-	void LoadStage(const LPSTR &stagePath);
-	void ShootBlock(const CKFVec3N &vnPos);
+	void LoadStage(const int &nStage);
+	void ShootBlock(const int &nZ, const int &nY, const int &nX);
+
+	//UI
+	bool CheckUndo(POINT pos);
+	int  CheckSelectStage(POINT pos);
 
 	//--------------------------------------------------------------------------------
 	//  変数宣言
@@ -173,6 +199,13 @@ private:
 	CKillBlock			m_killBlock;
 	CVirtualChangeBlock	m_virtualChangeBlock;
 	CNullChangeBlock	m_nullChangeBlock;
+
+	//UI(UIシステムまだ作ってないためここで宣言する)
+	CGameObject2D*				m_pClearUI;
+	CGameObject2D*				m_pBlockTypeUI;
+	CGameObject2D*				m_pUndoUI;
+	CGameObject2D*				m_apStageUI[s_nNumStageMax];
+	std::list<CGameObject2D*>	m_listUndoUI;
 };
 
 #endif

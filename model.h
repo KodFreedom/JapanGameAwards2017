@@ -59,6 +59,7 @@ protected:
 	static KFRESULT LoadXFile(XFILE* pXFile, const LPCSTR &pXFilePath);
 	static void		DrawXFile(const XFILE &XFile);
 	static void		DrawXFile(const XFILE &XFile, const CMM::MATERIAL &matType);
+	static void		DrawXFile(const XFILE &XFile, const CMM::MATERIAL &matType, const CTM::TEX_NAME &texName);
 	static void		ReleaseXFile(XFILE* pXFile);
 
 	//--------------------------------------------------------------------------------

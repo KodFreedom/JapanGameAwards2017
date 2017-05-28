@@ -11,15 +11,20 @@
 #define _HEROIN_H_
 
 //--------------------------------------------------------------------------------
+//  前方宣言
+//--------------------------------------------------------------------------------
+class CGameObject2D;
+
+//--------------------------------------------------------------------------------
 //  インクルードファイル
 //--------------------------------------------------------------------------------
-#include "gameObjectActor.h"
+#include "gameObjectModel.h"
 #include "KF_Math.h"
 
 //--------------------------------------------------------------------------------
 //  クラス宣言
 //--------------------------------------------------------------------------------
-class CHeroin : public CGameObjectActor
+class CHeroin : public CGameObjectModel
 {
 public:
 	//--------------------------------------------------------------------------------
@@ -45,9 +50,7 @@ public:
 	void		Update(void) override;
 	void		LateUpdate(void) override;
 	bool		IsClear(void) { return m_bClear; }
-
-	void	SetFastForward(const bool &bUse);
-	void	SetHeroin(const CKFVec3N &vnPos);
+	void		SetHeroin(const CKFVec3N &vnPos);
 
 	void	SaveLast(const int &nLimit)
 	{
@@ -100,10 +103,6 @@ private:
 		HEROIN_PARAM	param;
 		CKFVec3			vPos;
 		CKFVec3			vRot;
-		MOTION			motionNow;		//今のモーション
-		int				nKeyNow;		//今のキーフレーム
-		int				nCntFrame;		//今のフレーム
-		std::vector<CModelActorX::PARTS_INFO>	vectorPartsInfo;	// パーツ情報
 	};
 
 	//--------------------------------------------------------------------------------
@@ -119,14 +118,15 @@ private:
 	bool SearchHere(const CKFVec3N &vnPos);
 	bool CanSheGomeHere(const CKFVec3N &vnPos);
 	void GomeHere(const CKFVec3N &vnPos);
+	bool CheckFastForward(POINT pos);
 
 	//--------------------------------------------------------------------------------
 	//  変数定義
 	//--------------------------------------------------------------------------------
 	HEROIN_PARAM			m_param;
-	int						m_nNumLoop;
 	bool					m_bClear;
 	std::list<HEROIN_INFO>	m_listUndo;
+	CGameObject2D*			m_fastForwardUI;
 
 	CKFVec3 m_avPosOnStage[7][7][7];
 };

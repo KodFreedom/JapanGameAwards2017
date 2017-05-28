@@ -148,7 +148,7 @@ int CGameObjectManager::SaveGameObj(const PRIORITY &pri, CGameObject *pGameObj)
 
 	//”z—ñ‚ÌŠÔ‚É‹ó‚«‚ª‚È‚¢ê‡
 	m_avectorGameObj[pri].push_back(pGameObj);
-	return (int)m_avectorGameObj[pri].size();
+	return (int)m_avectorGameObj[pri].size() - 1;
 }
 
 //--------------------------------------------------------------------------------

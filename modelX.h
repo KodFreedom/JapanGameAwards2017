@@ -33,6 +33,7 @@ public:
 	void		Uninit(void) override;
 	void		Draw(void) override;
 	void		Draw(const CMM::MATERIAL &matType) override;
+	void		Draw(const CMM::MATERIAL &matType, const CTM::TEX_NAME &texName) override;
 
 	static CModelX* Create(const LPCSTR &pXFilePath);
 

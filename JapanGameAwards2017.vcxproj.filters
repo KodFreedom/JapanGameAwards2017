@@ -156,6 +156,21 @@
     <ClInclude Include="gameObjectManager.h">
       <Filter>ヘッダー ファイル\Base\Manager</Filter>
     </ClInclude>
+    <ClInclude Include="heroin.h">
+      <Filter>ヘッダー ファイル\GameObject\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="soundManager.h">
+      <Filter>ヘッダー ファイル\Base\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="effectCube.h">
+      <Filter>ヘッダー ファイル\GameObject\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="fade.h">
+      <Filter>ヘッダー ファイル\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="modeTitle.h">
+      <Filter>ヘッダー ファイル\Mode</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="lightManager.cpp">
@@ -238,6 +253,21 @@
     </ClCompile>
     <ClCompile Include="model.cpp">
       <Filter>ソース ファイル\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="soundManager.cpp">
+      <Filter>ソース ファイル\Base\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="effectCube.cpp">
+      <Filter>ソース ファイル\GameObject\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="heroin.cpp">
+      <Filter>ソース ファイル\GameObject\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="fade.cpp">
+      <Filter>ソース ファイル\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="modeTitle.cpp">
+      <Filter>ソース ファイル\Mode</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

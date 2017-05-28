@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------
 //
-//　mode.cpp
+//　modeDemo.cpp
 //	Author : Xu Wenjie
 //	Date   : 2017-04-28
 //--------------------------------------------------------------------------------
@@ -12,11 +12,14 @@
 //  インクルードファイル
 //--------------------------------------------------------------------------------
 #include "main.h"
-#include "mode.h"
-#include "camera.h"
-#include "stage.h"
 #include "manager.h"
-#include "gameObjectManager.h"
+#include "textureManager.h"
+#include "mode.h"
+#include "modeTitle.h"
+#include "gameObject2D.h"
+#include "fade.h"
+#include "inputDX.h"
+#include "soundManager.h"
 
 //--------------------------------------------------------------------------------
 //  クラス
@@ -24,70 +27,68 @@
 //--------------------------------------------------------------------------------
 //  コンストラクタ
 //--------------------------------------------------------------------------------
-CMode::CMode()
-	: m_pCamera(NULL)
-	, m_pStage(NULL)
+CModeTitle::CModeTitle() : CMode()
 {
+
+}
+
+//--------------------------------------------------------------------------------
+//  デストラクタ
+//--------------------------------------------------------------------------------
+CModeTitle::~CModeTitle()
+{
+
+}
+
+//--------------------------------------------------------------------------------
+//  初期化処理
+//--------------------------------------------------------------------------------
+void CModeTitle::Init(void)
+{
+	CGameObject2D::Create(CKFVec3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f), 0.0f, CKFVec2(SCREEN_WIDTH, SCREEN_HEIGHT), CTM::TEX_TITLE);
+	GetManager()->GetSoundManager()->Play(CSM::BGM_TITLE);
+	m_bStartLoop = false;
 }
 
 //--------------------------------------------------------------------------------
 //  終了処理
 //--------------------------------------------------------------------------------
-void CMode::Uninit(void)
+void CModeTitle::Uninit(void)
 {
-	//カメラの破棄
-	if (m_pCamera != NULL)
-	{
-		m_pCamera->Uninit();
-		delete m_pCamera;
-		m_pCamera = NULL;
-	}
+	GetManager()->GetSoundManager()->Stop(CSM::BGM_TITLE);
+	GetManager()->GetSoundManager()->Stop(CSM::BGM_TITLE_LOOP);
 
-	//オブジェクトの破棄
-	GetManager()->GetGameObjectManager()->ReleaseAll();
+	//ゲームオブジェクトの破棄
+	CMode::Uninit();
 }
 
 //--------------------------------------------------------------------------------
 //  更新処理
 //--------------------------------------------------------------------------------
-void CMode::Update(void)
+void CModeTitle::Update(void)
 {
-	//カメラの更新
-	if (m_pCamera != NULL)
+	CMode::Update();
+
+	CSoundManager *pSM = GetManager()->GetSoundManager();
+	if (pSM->IsOver(CSM::BGM_TITLE) && !m_bStartLoop)
 	{
-		m_pCamera->Update();
+		pSM->Play(CSM::BGM_TITLE_LOOP);
+		m_bStartLoop = true;
 	}
 
-	//オブジェクトの更新
-	GetManager()->GetGameObjectManager()->UpdateAll();
+	CMouseDX* pMouse = GetManager()->GetMouse();
+
+	if (pMouse->GetMouseTrigger(CMouseDX::MOUSE_LEFT))
+	{
+		pSM->Play(CSM::SE_CLICKSTART);
+		GetManager()->GetFade()->SetFade(CFade::FADE_OUT, CManager::MODE_DEMO);
+	}
 }
 
 //--------------------------------------------------------------------------------
 //  更新処理(描画直前)
 //--------------------------------------------------------------------------------
-void CMode::LateUpdate(void)
+void CModeTitle::LateUpdate(void)
 {
-	//カメラの更新
-	if (m_pCamera != NULL)
-	{
-		m_pCamera->LateUpdate();
-	}
-
-	//オブジェクトの更新
-	GetManager()->GetGameObjectManager()->LateUpdateAll();
-}
-
-//--------------------------------------------------------------------------------
-//  描画処理
-//--------------------------------------------------------------------------------
-void CMode::Draw(void)
-{
-	//カメラのセット
-	if (m_pCamera != NULL)
-	{
-		m_pCamera->Set();
-	}
-
-	//オブジェクトの描画
-	GetManager()->GetGameObjectManager()->DrawAll();
+	CMode::LateUpdate();
 }

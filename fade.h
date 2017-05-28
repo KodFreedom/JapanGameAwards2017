@@ -1,70 +1,61 @@
 //--------------------------------------------------------------------------------
 //
-//　textureManager.h
+//　fade.h
 //	Author : Xu Wenjie
-//	Date   : 2017-1-23
+//	Date   : 2016-12-27
 //--------------------------------------------------------------------------------
 //  Update : 
 //	
 //--------------------------------------------------------------------------------
-#ifndef _TEXTURE_MANAGER_H_
-#define _TEXTURE_MANAGER_H_
+#ifndef _FADE_H_
+#define _FADE_H_
 
 //--------------------------------------------------------------------------------
 //  インクルードファイル
 //--------------------------------------------------------------------------------
+#include "main.h"
 #include "manager.h"
 
 //--------------------------------------------------------------------------------
 //  定数定義
 //--------------------------------------------------------------------------------
-#define CTM CTextureManager	//テクスチャマネージャの略称
+
+//--------------------------------------------------------------------------------
+//  プロトタイプ宣言
+//--------------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------------
 //  クラス宣言
 //--------------------------------------------------------------------------------
-class CTextureManager
+class CFade
 {
 public:
 	typedef enum
 	{
-		TEX_NONE,
-		TEX_TEST,
-		TEX_POLYGON_ALPHA,
-		TEX_ROAD,
-		TEX_UNDO,
-		TEX_FAST_FORWARD,
-		TEX_FADE,
-		TEX_TITLE,
-		TEX_CLEAR,
-		TEX_WHITE,
-		TEX_BLACK,
-		TEX_ALPHA,
-		TEX_STAGE1,
-		TEX_STAGE2,
-		TEX_STAGE3,
-		TEX_STAGE4,
-		TEX_STAGE5,
-		TEX_STAGE6,
-		TEX_STAGE7,
-		TEX_STAGE8,
-		TEX_STAGE9,
-		TEX_STAGE10,
-		TEX_MAX
-	}TEX_NAME;
+		FADE_NONE = 0,
+		FADE_IN,
+		FADE_OUT,
+		FADE_MAX
+	}FADE;//フェイドの状態
 
-	CTextureManager();
-	~CTextureManager() {}
+	CFade();
+	~CFade();
 
-	void					Init(void);
-	void					LoadAll(void);
-	void					UnloadAll(void);
-	LPDIRECT3DTEXTURE9		GetTexture(const TEX_NAME &texName);
+	void	Init(void);
+	void	Uninit(void);
+	void	Update(void);
+	void	Draw(void);
+	void	SetFade(const FADE &fade, const CManager::MODE &modeNext);
+
+	static CFade *Create(void);
 private:
-	void Load(const TEX_NAME &texBegin, const TEX_NAME &texEnd);
+	void SetColorFade(const CKFColor &cColor);
 
-	std::vector<LPDIRECT3DTEXTURE9>	m_vectorTexture;
-	static LPCSTR					m_apTexPath[TEX_MAX];
+	CKFColor					m_cColor;
+	FADE						m_fade;//fade mode
+	CManager::MODE				m_modeNext;//roop mode
+	int							m_nCnt;
+	LPDIRECT3DVERTEXBUFFER9		m_pVtxBuffer;	//頂点バッファ管理インターフェースポインタ
 };
 
 #endif

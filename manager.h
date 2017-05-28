@@ -25,7 +25,9 @@ class CLightManager;
 class CMaterialManager;
 class CModelManager;
 class CGameObjectManager;
+class CSoundManager;
 class CMode;
+class CFade;
 
 //--------------------------------------------------------------------------------
 //  ÉNÉâÉXêÈåæ
@@ -35,6 +37,7 @@ class CManager
 public:
 	enum MODE
 	{
+		MODE_TITLE,
 		MODE_DEMO,
 		MODE_MAX
 	};
@@ -47,6 +50,7 @@ public:
 	void		Update(void);
 	void		LateUpdate(void);
 	void		Draw(void);
+	void		SetMode(const MODE &mode);
 
 	//Getä÷êî
 	CRendererDX*		GetRenderer(void) { return m_pRenderer; }
@@ -57,7 +61,9 @@ public:
 	CMaterialManager*	GetMaterialManager(void) { return m_pMaterialManager; }
 	CModelManager*		GetModelManager(void) { return m_pModelManager; }
 	CGameObjectManager*	GetGameObjectManager(void) { return m_pGameObjectManager; }
+	CSoundManager*		GetSoundManager(void) { return m_pSoundManager; }
 	CMode*				GetModeNow(void) { return m_apMode[m_mode]; }
+	CFade*				GetFade(void) { return m_pFade; }
 
 private:
 	CRendererDX*		m_pRenderer;
@@ -68,6 +74,8 @@ private:
 	CMaterialManager*	m_pMaterialManager;
 	CModelManager*		m_pModelManager;
 	CGameObjectManager*	m_pGameObjectManager;
+	CSoundManager*		m_pSoundManager;
+	CFade*				m_pFade;
 	CMode*				m_apMode[MODE_MAX];
 	MODE				m_mode;
 };

@@ -30,6 +30,7 @@ public:
 	void		Update(void) override;
 	void		LateUpdate(void) override;
 	void		Draw(void) override;
+	void		SetTexture(const CTM::TEX_NAME &texName) { m_texName = texName; }
 
 	static CGameObject2D* Create(const CKFVec3 &vPos, const float &fRot, const CKFVec2 &vSize, const CTM::TEX_NAME &texName);
 protected:

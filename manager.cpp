@@ -17,11 +17,14 @@
 #include "modelManager.h"
 #include "lightManager.h"
 #include "materialManager.h"
+#include "soundManager.h"
 #include "gameObjectManager.h"
 #include "rendererDX.h"
 #include "inputDX.h"
 #include "mode.h"
 #include "modeDemo.h"
+#include "modeTItle.h"
+#include "fade.h"
 
 //--------------------------------------------------------------------------------
 //  静的メンバー変数宣言
@@ -41,8 +44,10 @@ CManager::CManager()
 	, m_pLightManager(NULL)
 	, m_pMaterialManager(NULL)
 	, m_pModelManager(NULL)
+	, m_pSoundManager(NULL)
 	, m_pGameObjectManager(NULL)
-	, m_mode(MODE_DEMO)
+	, m_pFade(NULL)
+	, m_mode(MODE_TITLE)
 {
 	for (int nCntMode = 0; nCntMode < MODE_MAX; nCntMode++)
 	{
@@ -91,14 +96,22 @@ KFRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	m_pMaterialManager = new CMaterialManager;
 	m_pMaterialManager->Init();
 
+	//サウンドマネージャの生成
+	m_pSoundManager = new CSoundManager;
+	m_pSoundManager->LoadAll();
+
 	//ゲームオブジェクトマネージャの生成
 	m_pGameObjectManager = new CGameObjectManager;
 	m_pGameObjectManager->Init();
 
+	//Fadeの生成
+	m_pFade = CFade::Create();
+
 	//初期モード設定
-	m_mode = MODE_DEMO;
+	m_mode = MODE_TITLE;
 
 	//各モード生成
+	m_apMode[MODE_TITLE] = new CModeTitle;
 	m_apMode[MODE_DEMO] = new CModeDemo;
 
 	//初期モードの初期化
@@ -123,12 +136,28 @@ void CManager::Uninit(void)
 		}
 	}
 
+	//Fadeの破棄
+	if (m_pFade != NULL)
+	{
+		m_pFade->Uninit();
+		delete m_pFade;
+		m_pFade = NULL;
+	}
+
 	//ゲームオブジェクトマネージャの破棄
 	if (m_pGameObjectManager != NULL)
 	{
 		m_pGameObjectManager->Uninit();
 		delete m_pGameObjectManager;
 		m_pGameObjectManager = NULL;
+	}
+
+	//サウンドマネージャの破棄
+	if (m_pSoundManager != NULL)
+	{
+		m_pSoundManager->UnloadAll();
+		delete m_pSoundManager;
+		m_pSoundManager = NULL;
 	}
 
 	//マテリアルマネージャの破棄
@@ -210,6 +239,8 @@ void CManager::Update(void)
 		m_pRenderer->Update();
 	}
 
+	m_pFade->Update();
+
 	//モード更新
 	if (m_apMode[m_mode] != NULL)
 	{
@@ -244,7 +275,28 @@ void CManager::Draw(void)
 				m_apMode[m_mode]->Draw();
 			}
 
+			m_pFade->Draw();
+
 			m_pRenderer->EndDraw();
 		}
+	}
+}
+
+//--------------------------------------------------------------------------------
+//  モード切替
+//--------------------------------------------------------------------------------
+void CManager::SetMode(const MODE &mode)
+{
+	//終了処理
+	if (m_apMode[m_mode] != NULL)
+	{
+		m_apMode[m_mode]->Uninit();
+	}
+
+	m_mode = mode;
+
+	if (m_apMode[m_mode] != NULL)
+	{
+		m_apMode[m_mode]->Init();
 	}
 }

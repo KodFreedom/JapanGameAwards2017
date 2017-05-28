@@ -29,6 +29,24 @@ LPCSTR CTextureManager::m_apTexPath[TEX_MAX] = {
 	"data/TEXTURE/polygon.jpg",					//Test Texture
 	"data/TEXTURE/polygon.png",					//Test Texture
 	"data/TEXTURE/road_stone.jpg",				//Field Texture
+	"data/TEXTURE/Back.png",				//Field Texture
+	"data/TEXTURE/Quick.png",				//Field Texture
+	"data/TEXTURE/fade.jpg",				//Field Texture
+	"data/TEXTURE/title.jpg",				//Field Texture
+	"data/TEXTURE/stageclear.png",				//Field Texture
+	"data/TEXTURE/white.png",				//Field Texture
+	"data/TEXTURE/black.png",				//Field Texture
+	"data/TEXTURE/alpha.png",				//Field Texture
+	"data/TEXTURE/stage1.png",
+	"data/TEXTURE/stage2.png",
+	"data/TEXTURE/stage3.png",
+	"data/TEXTURE/stage4.png",
+	"data/TEXTURE/stage5.png",
+	"data/TEXTURE/stage6.png",
+	"data/TEXTURE/stage7.png",
+	"data/TEXTURE/stage8.png",
+	"data/TEXTURE/stage9.png",
+	"data/TEXTURE/stage10.png",
 };
 
 //--------------------------------------------------------------------------------

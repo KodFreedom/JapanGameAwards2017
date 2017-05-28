@@ -31,6 +31,8 @@ CModelManager::MODEL_INFO CModelManager::m_apModelInfo[MODEL_MAX] =
 	{ CModelManager::XFILE, "data/MODEL/selectionBox.x" },		//selection box
 	{ CModelManager::XFILE, "data/MODEL/stairs.x" },			//stairs
 	{ CModelManager::XFILE, "data/MODEL/goal.x" },				//goal
+	{ CModelManager::XFILE, "data/MODEL/wire.x" },
+	{ CModelManager::XFILE, "data/MODEL/player.x" },
 };
 
 //--------------------------------------------------------------------------------

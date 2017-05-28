@@ -150,6 +150,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="camera.h" />
+    <ClInclude Include="effectCube.h" />
+    <ClInclude Include="fade.h" />
     <ClInclude Include="gameObject.h" />
     <ClInclude Include="gameObject2D.h" />
     <ClInclude Include="gameObject3D.h" />
@@ -172,20 +174,25 @@
     <ClInclude Include="modelActorX.h" />
     <ClInclude Include="modelManager.h" />
     <ClInclude Include="modelX.h" />
+    <ClInclude Include="modeTitle.h" />
     <ClInclude Include="rendererDX.h" />
     <ClInclude Include="skyBox.h" />
+    <ClInclude Include="soundManager.h" />
     <ClInclude Include="stage.h" />
     <ClInclude Include="stageEditor.h" />
     <ClInclude Include="textureManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="camera.cpp" />
+    <ClCompile Include="effectCube.cpp" />
+    <ClCompile Include="fade.cpp" />
     <ClCompile Include="gameObject.cpp" />
     <ClCompile Include="gameObject2D.cpp" />
     <ClCompile Include="gameObject3D.cpp" />
     <ClCompile Include="gameObjectActor.cpp" />
     <ClCompile Include="gameObjectManager.cpp" />
     <ClCompile Include="gameObjectModel.cpp" />
+    <ClCompile Include="heroin.cpp" />
     <ClCompile Include="inputDX.cpp" />
     <ClCompile Include="KF_Math.cpp" />
     <ClCompile Include="KF_UtilityDX.cpp" />
@@ -201,8 +208,10 @@
     <ClCompile Include="modelActorX.cpp" />
     <ClCompile Include="modelManager.cpp" />
     <ClCompile Include="modelX.cpp" />
+    <ClCompile Include="modeTitle.cpp" />
     <ClCompile Include="rendererDX.cpp" />
     <ClCompile Include="skyBox.cpp" />
+    <ClCompile Include="soundManager.cpp" />
     <ClCompile Include="stage.cpp" />
     <ClCompile Include="stageEditor.cpp" />
     <ClCompile Include="textureManager.cpp" />

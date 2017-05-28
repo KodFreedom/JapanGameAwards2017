@@ -133,6 +133,33 @@ void CModel::DrawXFile(const XFILE &XFile, const CMM::MATERIAL &matType)
 }
 
 //--------------------------------------------------------------------------------
+//  XFileの描画(Material指定)
+//--------------------------------------------------------------------------------
+void CModel::DrawXFile(const XFILE &XFile, const CMM::MATERIAL &matType, const CTM::TEX_NAME &texName)
+{
+	//現在デバイスに設定されてるマテリアル情報を取得
+	LPDIRECT3DDEVICE9 pDevice = GetManager()->GetRenderer()->GetDevice();
+	D3DMATERIAL9 matDef;
+	pDevice->GetMaterial(&matDef);
+
+	// マテリアルの設定
+	D3DMATERIAL9 mat = GetManager()->GetMaterialManager()->GetMaterial(matType);
+	pDevice->SetMaterial(&mat);
+
+	// テクスチャの設定
+	LPDIRECT3DTEXTURE9 pTexture = GetManager()->GetTextureManager()->GetTexture(texName);
+	pDevice->SetTexture(0, pTexture);
+
+	for (int nCnt = 0; nCnt < (int)XFile.dwNumMaterial; nCnt++)
+	{
+		//メッシュの描画
+		XFile.pMesh->DrawSubset(nCnt);
+	}
+
+	pDevice->SetMaterial(&matDef);
+}
+
+//--------------------------------------------------------------------------------
 //  XFileの破棄
 //--------------------------------------------------------------------------------
 void CModel::ReleaseXFile(XFILE* pXFile)

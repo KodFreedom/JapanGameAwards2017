@@ -1,47 +1,41 @@
 //--------------------------------------------------------------------------------
 //
-//　mode.h
+//　modeTitle.h
 //	Author : Xu Wenjie
 //	Date   : 2017-04-28
 //--------------------------------------------------------------------------------
 //  Update : 
 //	
 //--------------------------------------------------------------------------------
-#ifndef _MODE_H_
-#define _MODE_H_
+#ifndef _MODETITLE_H_
+#define _MODETITLE_H_
 
 //--------------------------------------------------------------------------------
 //  インクルードファイル
 //--------------------------------------------------------------------------------
+#include "mode.h"
+
 //--------------------------------------------------------------------------------
 //  前方宣言
 //--------------------------------------------------------------------------------
-class CCamera;
-class CStage;
+
 
 //--------------------------------------------------------------------------------
 //  クラス宣言
 //--------------------------------------------------------------------------------
-class CMode
+class CModeTitle : public CMode
 {
 public:
-	CMode();
-	~CMode() {}
+	CModeTitle();
+	~CModeTitle();
 
-	virtual void	Init(void) = 0;
-	virtual void	Uninit(void);
-	virtual void	Update(void);
-	virtual void	LateUpdate(void);
-	virtual void	Draw(void);
+	void	Init(void) override;
+	void	Uninit(void) override;
+	void	Update(void) override;
+	void	LateUpdate(void) override;
 
-	//Get関数
-	CCamera*		GetCamera(void) { return m_pCamera; }
-	CStage*			GetStage(void) { return m_pStage; }
+private:
 
-protected:
-	CCamera*		m_pCamera;
-	CStage*			m_pStage;
-	bool			m_bStartLoop;
 };
 
 #endif
